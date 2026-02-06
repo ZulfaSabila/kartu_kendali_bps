@@ -4,226 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Data Pemeliharaan - BPS Kota Bontang</title>
-
-    <!-- Bootstrap CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
+        :root { --bps-blue: #003366; --bps-orange: #F39200; --bps-light: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bps-light); }
+        .card-edit { border: none; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .form-section { border-left: 4px solid var(--bps-orange); padding-left: 10px; font-weight: 700; color: var(--bps-blue); margin-bottom: 20px; }
     </style>
 </head>
-
 <body>
     <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header text-white" style="background-color: #003366;">
-                        <h2 class="h5 mb-0">
-                            <i class="bi bi-pencil-square me-2"></i>Edit Data Pemeliharaan
-                        </h2>
+            <div class="col-md-9">
+                <div class="card card-edit overflow-hidden">
+                    <div class="card-header py-3 text-white d-flex align-items-center" style="background-color: var(--bps-blue);">
+                        <i class="bi bi-pencil-square fs-4 me-2 text-warning"></i>
+                        <h2 class="h5 mb-0 fw-bold">Edit Riwayat Pemeliharaan</h2>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-4 bg-white">
                         <form action="{{ route('pemeliharaans.update', $pemeliharaan) }}" method="POST">
-                            @csrf
-                            @method('PUT')
+                            @csrf @method('PUT')
 
-                            <div class="row g-3">
-                                
-                                <!-- Kategori -->
+                            <div class="form-section">Data Dasar & Lokasi</div>
+                            <div class="row g-3 mb-4">
                                 <div class="col-md-6">
-                                    <label for="kategori_id" class="form-label">
-                                        Kategori <span class="text-danger">*</span>
-                                    </label>
-                                    <select name="kategori_id" id="kategori_id" class="form-select @error('kategori_id') is-invalid @enderror" required>
-                                        <option value="">-- Pilih Kategori --</option>
+                                    <label class="form-label fw-semibold">Kategori <span class="text-danger">*</span></label>
+                                    <select name="kategori_id" class="form-select @error('kategori_id') is-invalid @enderror" required>
                                         @foreach($kategoris as $kat)
-                                            <option value="{{ $kat->id }}" {{ old('kategori_id', $pemeliharaan->kategori_id) == $kat->id ? 'selected' : '' }}>
-                                                {{ $kat->nama_kategori }}
-                                            </option>
+                                            <option value="{{ $kat->id }}" {{ old('kategori_id', $pemeliharaan->kategori_id) == $kat->id ? 'selected' : '' }}>{{ $kat->nama_kategori }}</option>
                                         @endforeach
                                     </select>
-                                    @error('kategori_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
                                 </div>
-
-                                <!-- NUP BMN -->
                                 <div class="col-md-6">
-                                    <label for="nup_bmn" class="form-label">NUP BMN</label>
-                                    <input type="text" name="nup_bmn" id="nup_bmn" 
-                                           class="form-control @error('nup_bmn') is-invalid @enderror" 
-                                           value="{{ old('nup_bmn', $pemeliharaan->nup_bmn) }}" 
-                                           placeholder="Masukkan NUP BMN">
-                                    @error('nup_bmn')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <label class="form-label fw-semibold">NUP BMN</label>
+                                    <input type="text" name="nup_bmn" class="form-control" value="{{ old('nup_bmn', $pemeliharaan->nup_bmn) }}">
                                 </div>
-
-                                <!-- Nama Barang -->
                                 <div class="col-md-6">
-                                    <label for="nama_barang" class="form-label">Nama Barang</label>
-                                    <input type="text" name="nama_barang" id="nama_barang" 
-                                           class="form-control @error('nama_barang') is-invalid @enderror" 
-                                           value="{{ old('nama_barang', $pemeliharaan->nama_barang) }}" 
-                                           placeholder="Masukkan nama barang">
-                                    @error('nama_barang')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <label class="form-label fw-semibold">Nama Barang</label>
+                                    <input type="text" name="nama_barang" class="form-control" value="{{ old('nama_barang', $pemeliharaan->nama_barang) }}">
                                 </div>
-
-                                <!-- Merk/Type -->
                                 <div class="col-md-6">
-                                    <label for="merk_type" class="form-label">Merk/Type</label>
-                                    <input type="text" name="merk_type" id="merk_type" 
-                                           class="form-control @error('merk_type') is-invalid @enderror" 
-                                           value="{{ old('merk_type', $pemeliharaan->merk_type) }}" 
-                                           placeholder="Masukkan merk/type barang">
-                                    @error('merk_type')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <label class="form-label fw-semibold">Merk/Type</label>
+                                    <input type="text" name="merk_type" class="form-control" value="{{ old('merk_type', $pemeliharaan->merk_type) }}">
                                 </div>
-
-                                <!-- Lokasi -->
                                 <div class="col-md-12">
-                                    <label for="lokasi" class="form-label">Lokasi</label>
-                                    <input type="text" name="lokasi" id="lokasi" 
-                                           class="form-control @error('lokasi') is-invalid @enderror" 
-                                           value="{{ old('lokasi', $pemeliharaan->lokasi) }}" 
-                                           placeholder="Masukkan lokasi">
-                                    @error('lokasi')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <label class="form-label fw-semibold">Lokasi</label>
+                                    <input type="text" name="lokasi" class="form-control bg-light" value="{{ old('lokasi', $pemeliharaan->lokasi) }}">
                                 </div>
+                            </div>
 
-                                <!-- Tanggal Mulai -->
+                            <div class="form-section">Waktu & Pekerjaan</div>
+                            <div class="row g-3 mb-4">
                                 <div class="col-md-6">
-                                    <label for="tanggal_mulai" class="form-label">Tanggal Mulai Pekerjaan</label>
-                                    <input type="date" name="tanggal_mulai" id="tanggal_mulai" 
-                                           class="form-control @error('tanggal_mulai') is-invalid @enderror" 
-                                           value="{{ old('tanggal_mulai', $pemeliharaan->tanggal_mulai ? $pemeliharaan->tanggal_mulai->format('Y-m-d') : '') }}">
-                                    @error('tanggal_mulai')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <label class="form-label fw-semibold">Tanggal Mulai</label>
+                                    <input type="date" name="tanggal_mulai" class="form-control" value="{{ old('tanggal_mulai', $pemeliharaan->tanggal_mulai ? $pemeliharaan->tanggal_mulai->format('Y-m-d') : '') }}">
                                 </div>
-
-                                <!-- Tanggal Selesai -->
                                 <div class="col-md-6">
-                                    <label for="tanggal_selesai" class="form-label">Tanggal Selesai Pekerjaan</label>
-                                    <input type="date" name="tanggal_selesai" id="tanggal_selesai" 
-                                           class="form-control @error('tanggal_selesai') is-invalid @enderror" 
-                                           value="{{ old('tanggal_selesai', $pemeliharaan->tanggal_selesai ? $pemeliharaan->tanggal_selesai->format('Y-m-d') : '') }}">
-                                    @error('tanggal_selesai')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <label class="form-label fw-semibold">Tanggal Selesai</label>
+                                    <input type="date" name="tanggal_selesai" class="form-control" value="{{ old('tanggal_selesai', $pemeliharaan->tanggal_selesai ? $pemeliharaan->tanggal_selesai->format('Y-m-d') : '') }}">
                                 </div>
-
-                                <!-- Rincian Pekerjaan -->
                                 <div class="col-md-12">
-                                    <label for="rincian_pekerjaan" class="form-label">Rincian Pekerjaan</label>
-                                    <textarea name="rincian_pekerjaan" id="rincian_pekerjaan" rows="3" 
-                                              class="form-control @error('rincian_pekerjaan') is-invalid @enderror" 
-                                              placeholder="Masukkan rincian pekerjaan pemeliharaan">{{ old('rincian_pekerjaan', $pemeliharaan->rincian_pekerjaan) }}</textarea>
-                                    @error('rincian_pekerjaan')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <label class="form-label fw-semibold">Rincian Pekerjaan</label>
+                                    <textarea name="rincian_pekerjaan" rows="3" class="form-control">{{ old('rincian_pekerjaan', $pemeliharaan->rincian_pekerjaan) }}</textarea>
                                 </div>
+                            </div>
 
-                                <!-- Biaya -->
+                            <div class="form-section">Realisasi Anggaran</div>
+                            
+                            <div class="row g-3 mb-4">
                                 <div class="col-md-6">
-                                    <label for="biaya" class="form-label">
-                                        Biaya (Rp) <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="number" name="biaya" id="biaya" 
-                                           class="form-control @error('biaya') is-invalid @enderror" 
-                                           value="{{ old('biaya', $pemeliharaan->biaya) }}" 
-                                           min="0" step="0.01" required
-                                           placeholder="0">
-                                    @error('biaya')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- Pagu -->
-                                <div class="col-md-6">
-                                    <label for="pagu" class="form-label">
-                                        Pagu (Rp) <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="number" name="pagu" id="pagu" 
-                                           class="form-control @error('pagu') is-invalid @enderror" 
-                                           value="{{ old('pagu', $pemeliharaan->pagu) }}" 
-                                           min="0" step="0.01" required
-                                           placeholder="0">
-                                    @error('pagu')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- Info Sisa Anggaran -->
-                                <div class="col-md-12">
-                                    <div class="alert {{ $pemeliharaan->sisa_anggaran >= 0 ? 'alert-success' : 'alert-danger' }}" role="alert">
-                                        <strong>Sisa Anggaran Saat Ini:</strong> 
-                                        Rp {{ number_format($pemeliharaan->sisa_anggaran, 0, ',', '.') }}
+                                    <label class="form-label fw-semibold">Biaya (Rp)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input type="number" name="biaya" id="biaya" class="form-control fw-bold text-primary" value="{{ old('biaya', $pemeliharaan->biaya) }}" required>
                                     </div>
                                 </div>
-
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Pagu (Rp)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input type="number" name="pagu" id="pagu" class="form-control fw-bold text-success" value="{{ old('pagu', $pemeliharaan->pagu) }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <div class="alert {{ $pemeliharaan->sisa_anggaran >= 0 ? 'alert-success' : 'alert-danger' }} border-0 shadow-sm d-flex justify-content-between align-items-center">
+                                        <span><strong>Status Anggaran Saat Ini:</strong></span>
+                                        <h5 class="mb-0 fw-bold">Rp {{ number_format($pemeliharaan->sisa_anggaran, 0, ',', '.') }}</h5>
+                                    </div>
+                                </div>
                             </div>
 
-                            <!-- Buttons -->
-                            <div class="d-flex justify-content-between mt-4">
-                                <a href="{{ route('pemeliharaans.index') }}" class="btn btn-secondary">
-                                    <i class="bi bi-arrow-left"></i> Kembali
-                                </a>
-                                <button type="submit" class="btn text-white" style="background-color: #F39200;">
-                                    <i class="bi bi-save"></i> Update
-                                </button>
+                            <div class="d-flex justify-content-between mt-5 border-top pt-3">
+                                <a href="{{ route('pemeliharaans.index') }}" class="btn btn-outline-secondary px-4">Kembali</a>
+                                <button type="submit" class="btn text-white px-5 fw-bold shadow-sm" style="background-color: var(--bps-orange);">Simpan Perubahan</button>
                             </div>
-
                         </form>
-                    </div>
-                </div>
-
-                <!-- Info Card -->
-                <div class="card shadow-sm border-0 mt-3">
-                    <div class="card-body">
-                        <h6 class="mb-2"><i class="bi bi-info-circle me-2"></i>Informasi</h6>
-                        <small class="text-muted">
-                            <strong>Dibuat:</strong> {{ $pemeliharaan->created_at->format('d F Y, H:i') }} WIB
-                            @if($pemeliharaan->updated_at != $pemeliharaan->created_at)
-                                <br><strong>Terakhir diupdate:</strong> {{ $pemeliharaan->updated_at->format('d F Y, H:i') }} WIB
-                            @endif
-                        </small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        // Auto-calculate sisa anggaran
-        const biayaInput = document.getElementById('biaya');
-        const paguInput = document.getElementById('pagu');
-
-        function validateBudget() {
-            const biaya = parseFloat(biayaInput.value) || 0;
-            const pagu = parseFloat(paguInput.value) || 0;
-
-            if (biaya > pagu && pagu > 0) {
-                alert('Peringatan: Biaya melebihi pagu anggaran!');
-            }
-        }
-
-        biayaInput.addEventListener('change', validateBudget);
-        paguInput.addEventListener('change', validateBudget);
-    </script>
-
 </body>
 </html>

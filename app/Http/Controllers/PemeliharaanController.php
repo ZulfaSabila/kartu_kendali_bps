@@ -16,11 +16,7 @@ class PemeliharaanController extends Controller
         $query = Pemeliharaan::where('user_id', auth()->id())
                             ->with('kategori');
 
-        // ============================================
-        // LOGIKA DEFAULT: Jika tidak ada filter apapun, tampilkan hanya kategori pertama
-        // ============================================
         if (!$request->hasAny(['search', 'kategori_id', 'tanggal_mulai', 'tanggal_selesai'])) {
-            // Ambil kategori_id pertama milik user yang login
             $firstKategoriId = Pemeliharaan::where('user_id', auth()->id())
                                           ->orderBy('kategori_id')
                                           ->value('kategori_id');
@@ -30,24 +26,18 @@ class PemeliharaanController extends Controller
             }
         }
 
-        // ============================================
-        // FIX: Filter berdasarkan kategori (PENTING!)
-        // ============================================
         if ($request->filled('kategori_id')) {
             $query->where('kategori_id', $request->kategori_id);
         }
 
-        // Filter berdasarkan tanggal mulai
         if ($request->filled('tanggal_mulai')) {
             $query->whereDate('tanggal_mulai', '>=', $request->tanggal_mulai);
         }
 
-        // Filter berdasarkan tanggal selesai
         if ($request->filled('tanggal_selesai')) {
             $query->whereDate('tanggal_selesai', '<=', $request->tanggal_selesai);
         }
 
-        // Search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -68,7 +58,7 @@ class PemeliharaanController extends Controller
         $kategoris = Kategori::where('user_id', auth()->id())->get();
         return view('pemeliharaans.create', compact('kategoris'));
     }
-
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -85,12 +75,10 @@ class PemeliharaanController extends Controller
         ]);
 
         $validated['user_id'] = auth()->id();
-
         Pemeliharaan::create($validated);
 
-        // Redirect dengan kategori_id agar langsung menampilkan kategori yang baru ditambahkan
         return redirect()->route('pemeliharaans.index', ['kategori_id' => $validated['kategori_id']])
-                        ->with('success', 'Data pemeliharaan berhasil ditambahkan!');
+            ->with('success', 'Data pemeliharaan berhasil ditambahkan!');
     }
 
     public function show(Pemeliharaan $pemeliharaan)
@@ -133,7 +121,6 @@ class PemeliharaanController extends Controller
 
         $pemeliharaan->update($validated);
 
-        // Redirect dengan kategori_id agar tetap di kategori yang sama
         return redirect()->route('pemeliharaans.index', ['kategori_id' => $validated['kategori_id']])
                         ->with('success', 'Data pemeliharaan berhasil diupdate!');
     }
@@ -147,28 +134,30 @@ class PemeliharaanController extends Controller
         $kategoriId = $pemeliharaan->kategori_id;
         $pemeliharaan->delete();
 
-        // Redirect dengan kategori_id agar tetap di kategori yang sama
         return redirect()->route('pemeliharaans.index', ['kategori_id' => $kategoriId])
                         ->with('success', 'Data pemeliharaan berhasil dihapus!');
     }
 
     public function exportPdf(Request $request)
     {
-        $query = Pemeliharaan::where('user_id', auth()->id())
-                            ->with('kategori');
+        $query = Pemeliharaan::where('user_id', auth()->id())->with('kategori');
 
         if ($request->filled('kategori_id')) {
             $query->where('kategori_id', $request->kategori_id);
+        } else {
+            return redirect()->back()->with('error', 'Silakan pilih kategori terlebih dahulu sebelum mencetak.');
         }
 
         $pemeliharaans = $query->get();
+        $kategori = Kategori::find($request->kategori_id);
+
         $totalBiaya = $pemeliharaans->sum('biaya');
         $totalPagu = $pemeliharaans->sum('pagu');
         $sisaAnggaran = $totalPagu - $totalBiaya;
 
-        $pdf = PDF::loadView('pemeliharaans.pdf', compact('pemeliharaans', 'totalBiaya', 'totalPagu', 'sisaAnggaran'));
+        $pdf = PDF::loadView('pemeliharaans.pdf', compact('pemeliharaans', 'totalBiaya', 'totalPagu', 'sisaAnggaran', 'kategori'));
         
-        return $pdf->download('kartu-kendali-pemeliharaan-' . date('Y-m-d') . '.pdf');
+        return $pdf->download('kartu-kendali-' . ($kategori->nama_kategori ?? 'data') . '.pdf');
     }
 
     public function exportExcel(Request $request)

@@ -3,295 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Kartu Kendali Pemeliharaan BPS</title>
+    <title>Dashboard - Kartu Kendali BPS</title>
 
-    <!-- Bootstrap CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
         :root {
+            --bps-dark-blue: #002d57;
             --bps-blue: #003366;
+            --bps-light-blue: #eef4f9;
             --bps-green: #77B02A;
-            --bps-orange: #F39200;
-            --bps-cyan: #00AEEF;
+            --bps-accent: #00AEEF;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #334155;
         }
 
+        /* Navbar Modern */
         .navbar-bps {
-            background: linear-gradient(135deg, var(--bps-blue) 0%, #004080 100%);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background-color: var(--bps-dark-blue);
+            border-bottom: 4px solid var(--bps-green);
         }
 
-        .logo-bps {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
+        .logo-text {
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
-        .logo-bps i {
-            color: var(--bps-green);
-        }
-
+        /* Card Stats */
         .stat-card {
             border: none;
-            border-radius: 15px;
-            transition: all 0.3s ease;
-            background: white;
-            overflow: hidden;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
         }
 
-        .stat-card .card-body {
-            padding: 1.5rem;
+        .stat-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
         }
 
-        .stat-icon {
-            font-size: 2.5rem;
-            opacity: 0.8;
-        }
-
+        /* Category Card */
         .kategori-card {
-            border: none;
-            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #fff;
             transition: all 0.3s ease;
-            background: white;
-            cursor: pointer;
-            height: 100%;
             text-decoration: none;
             color: inherit;
-            display: block;
-            overflow: hidden;
         }
 
         .kategori-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+            border-color: var(--bps-blue);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
-        .kategori-card .card-header {
-            border: none;
-            padding: 1.5rem;
-            font-weight: bold;
+        .card-category-title {
+            color: var(--bps-blue);
+            font-weight: 600;
             font-size: 1.1rem;
         }
 
-        .kategori-card .card-body {
-            padding: 1.5rem;
+        .progress {
+            height: 8px;
+            border-radius: 10px;
+            background-color: #e2e8f0;
         }
 
-        .badge-count {
-            font-size: 2rem;
-            font-weight: bold;
+        .section-header {
+            border-left: 5px solid var(--bps-green);
+            padding-left: 15px;
+            margin-bottom: 25px;
         }
 
-        .empty-state {
-            padding: 4rem 2rem;
-            text-align: center;
-        }
-
-        .empty-state i {
-            font-size: 5rem;
-            color: #ddd;
-            margin-bottom: 1rem;
-        }
-
-        .btn-bps {
+        .btn-bps-primary {
+            background-color: var(--bps-blue);
+            color: white;
             border-radius: 8px;
-            padding: 0.5rem 1.5rem;
             font-weight: 500;
-            transition: all 0.3s ease;
         }
 
-        .btn-bps:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--bps-blue);
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 0.5rem;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background: var(--bps-green);
-        }
-
-        .kategori-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .info-text {
-            font-size: 0.9rem;
-            color: #6c757d;
+        .btn-bps-primary:hover {
+            background-color: var(--bps-dark-blue);
+            color: white;
         }
     </style>
 </head>
-
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-bps navbar-dark mb-4">
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-bps py-3">
         <div class="container">
-            <a href="{{ route('dashboard') }}" class="logo-bps">
-                <i class="bi bi-building"></i> BPS Kota Bontang
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="https://www.bps.go.id/_next/image?url=%2Fassets%2Flogo-bps.png&w=1080&q=75" alt="Logo" width="40" class="me-2">
+                <span class="logo-text">KARTU KENDALI BPS</span>
             </a>
             
-            <div class="d-flex gap-2">
-                <a href="{{ route('kategoris.create') }}" class="btn btn-light btn-bps">
-                    <i class="bi bi-plus-circle me-1"></i> Tambah Kategori
-                </a>
-
-                <div class="dropdown">
-                    <button class="btn btn-outline-light btn-bps dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i> {{ Auth::user()->name ?? 'User' }}
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3 d-none d-md-block">Halo, <strong>{{ Auth::user()->name ?? 'Administrator' }}</strong></span>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-sm btn-outline-light">
+                        <i class="bi bi-box-arrow-right"></i> Logout
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                        <li>
-                            <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                <i class="bi bi-person-fill"></i> Profil
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="dropdown-item text-danger">
-                                    <i class="bi bi-box-arrow-right"></i> Logout
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
+                </form>
             </div>
         </div>
     </nav>
 
-    <div class="container py-4">
-
-        <!-- Statistics Cards -->
-        <div class="row mb-5">
-            <div class="col-md-3 mb-3">
-                <div class="card stat-card shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-folder-fill stat-icon" style="color: var(--bps-blue);"></i>
-                        <div class="text-muted small fw-bold text-uppercase mt-2">Total Kategori</div>
-                        <div class="h2 fw-bold mb-0" style="color: var(--bps-blue);">{{ $totalKategori }}</div>
-                    </div>
+    <div class="container py-5">
+        
+        <div class="row align-items-center mb-4">
+            <div class="col-md-6">
+                <div class="section-header">
+                    <h2 class="fw-bold m-0">Ringkasan Anggaran 2026</h2>
+                    <p class="text-muted m-0">Pemeliharaan BMN BPS Kota Bontang</p>
                 </div>
             </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card stat-card shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-tools stat-icon" style="color: var(--bps-green);"></i>
-                        <div class="text-muted small fw-bold text-uppercase mt-2">Total Pemeliharaan</div>
-                        <div class="h2 fw-bold mb-0" style="color: var(--bps-green);">{{ $totalPemeliharaan }}</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card stat-card shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-wallet2 stat-icon" style="color: var(--bps-orange);"></i>
-                        <div class="text-muted small fw-bold text-uppercase mt-2">Total Biaya</div>
-                        <div class="h5 fw-bold mb-0" style="color: var(--bps-orange);">
-                            Rp {{ number_format($totalBiaya, 0, ',', '.') }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card stat-card shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-piggy-bank stat-icon" style="color: {{ $sisaAnggaran >= 0 ? 'var(--bps-cyan)' : '#dc3545' }};"></i>
-                        <div class="text-muted small fw-bold text-uppercase mt-2">Sisa Anggaran</div>
-                        <div class="h5 fw-bold mb-0" style="color: {{ $sisaAnggaran >= 0 ? 'var(--bps-cyan)' : '#dc3545' }};">
-                            Rp {{ number_format($sisaAnggaran, 0, ',', '.') }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Kategori Section -->
-        <div class="section-title">
-            <i class="bi bi-grid-3x3-gap-fill me-2"></i> Kategori Pemeliharaan
-        </div>
-
-        @if($kategoris->isEmpty())
-            <div class="card shadow-sm border-0 empty-state">
-                <div class="card-body">
-                    <i class="bi bi-inbox"></i>
-                    <h4 class="text-muted mb-3">Belum Ada Kategori</h4>
-                    <p class="text-muted mb-4">Mulai dengan menambahkan kategori pemeliharaan pertama Anda</p>
-                    <a href="{{ route('kategoris.create') }}" class="btn btn-bps" style="background-color: var(--bps-green); color: white;">
-                        <i class="bi bi-plus-circle me-1"></i> Tambah Kategori Pertama
-                    </a>
-                </div>
-            </div>
-        @else
-            <div class="row">
-                @foreach($kategoris as $kategori)
-                    <div class="col-md-4 col-lg-3 mb-4">
-                        <a href="{{ route('pemeliharaans.index', ['kategori_id' => $kategori->id]) }}" class="kategori-card shadow-sm">
-                            <div class="card-header text-white text-center" style="background: linear-gradient(135deg, {{ $loop->iteration % 4 == 1 ? 'var(--bps-blue)' : ($loop->iteration % 4 == 2 ? 'var(--bps-green)' : ($loop->iteration % 4 == 3 ? 'var(--bps-orange)' : 'var(--bps-cyan)')) }} 0%, {{ $loop->iteration % 4 == 1 ? '#004080' : ($loop->iteration % 4 == 2 ? '#88c03a' : ($loop->iteration % 4 == 3 ? '#ffa500' : '#00c8ff')) }} 100%);">
-                                <i class="bi bi-folder2-open kategori-icon"></i>
-                                <div>{{ $kategori->nama_kategori }}</div>
-                            </div>
-                            <div class="card-body text-center">
-                                <div class="badge-count" style="color: {{ $loop->iteration % 4 == 1 ? 'var(--bps-blue)' : ($loop->iteration % 4 == 2 ? 'var(--bps-green)' : ($loop->iteration % 4 == 3 ? 'var(--bps-orange)' : 'var(--bps-cyan)')) }};">
-                                    {{ $kategori->pemeliharaans_count }}
-                                </div>
-                                <div class="info-text">Data Pemeliharaan</div>
-                                
-                                @if($kategori->deskripsi)
-                                    <hr>
-                                    <p class="text-muted small mb-0" style="font-size: 0.85rem;">
-                                        {{ Str::limit($kategori->deskripsi, 60) }}
-                                    </p>
-                                @endif
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
-            </div>
-
-            <!-- Link ke halaman kategori lengkap -->
-            <div class="text-center mt-4">
-                <a href="{{ route('kategoris.index') }}" class="btn btn-outline-secondary btn-bps">
-                    <i class="bi bi-list-ul me-1"></i> Lihat Semua Kategori
+            <div class="col-md-6 text-md-end">
+                <a href="{{ route('kategoris.create') }}" class="btn btn-bps-primary px-4">
+                    <i class="bi bi-plus-lg me-2"></i>Tambah Kategori
                 </a>
             </div>
-        @endif
+        </div>
 
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="card stat-card p-3">
+                    <div class="stat-icon-wrapper" style="background-color: #e0f2fe;">
+                        <i class="bi bi-collection text-primary fs-4"></i>
+                    </div>
+                    <p class="text-muted small fw-medium mb-1">TOTAL KATEGORI</p>
+                    <h3 class="fw-bold">{{ $totalKategori }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card p-3">
+                    <div class="stat-icon-wrapper" style="background-color: #f0fdf4;">
+                        <i class="bi bi-check2-circle text-success fs-4"></i>
+                    </div>
+                    <p class="text-muted small fw-medium mb-1">TOTAL PEKERJAAN</p>
+                    <h3 class="fw-bold">{{ $totalPemeliharaan }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card p-3">
+                    <div class="stat-icon-wrapper" style="background-color: #fefce8;">
+                        <i class="bi bi-cash-stack text-warning fs-4"></i>
+                    </div>
+                    <p class="text-muted small fw-medium mb-1">REALISASI BIAYA</p>
+                    <h3 class="fw-bold text-dark">Rp{{ number_format($totalBiaya, 0, ',', '.') }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card p-3">
+                    <div class="stat-icon-wrapper" style="background-color: {{ $sisaAnggaran >= 0 ? '#ecfeff' : '#fef2f2' }};">
+                        <i class="bi bi-wallet2 {{ $sisaAnggaran >= 0 ? 'text-info' : 'text-danger' }} fs-4"></i>
+                    </div>
+                    <p class="text-muted small fw-medium mb-1">SISA ANGGARAN</p>
+                    <h3 class="fw-bold {{ $sisaAnggaran >= 0 ? 'text-dark' : 'text-danger' }}">
+                        Rp{{ number_format($sisaAnggaran, 0, ',', '.') }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm p-4 mb-5 bg-white" style="border-radius: 12px;">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="fw-bold m-0"><i class="bi bi-bar-chart-line me-2"></i>Penyerapan Anggaran Terhadap Pagu</h6>
+                @php 
+                    $pagu = $totalBiaya + $sisaAnggaran;
+                    $persen = $pagu > 0 ? ($totalBiaya / $pagu) * 100 : 0;
+                @endphp
+                <span class="badge bg-{{ $persen > 90 ? 'danger' : 'primary' }}">{{ round($persen, 1) }}% Terpakai</span>
+            </div>
+            <div class="progress mb-2">
+                <div class="progress-bar" role="progressbar" style="width: {{ $persen }}%; background-color: var(--bps-blue);" aria-valuenow="{{ $persen }}" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <small class="text-muted">Total Pagu: Rp{{ number_format($pagu, 0, ',', '.') }}</small>
+                <small class="text-muted">Target: Efisiensi Anggaran</small>
+            </div>
+        </div>
+
+        <h5 class="fw-bold mb-4">Daftar Inventaris BMN</h5>
+        <div class="row g-4">
+            @forelse($kategoris as $kategori)
+            <div class="col-md-4">
+                <a href="{{ route('pemeliharaans.index', ['kategori_id' => $kategori->id]) }}" class="kategori-card d-block p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="card-category-title">{{ $kategori->nama_kategori }}</div>
+                        <span class="badge bg-light text-dark border">{{ $kategori->pemeliharaans_count }} Data</span>
+                    </div>
+                    <p class="text-muted small mb-4">
+                        {{ $kategori->deskripsi ?? 'Tidak ada deskripsi kategori.' }}
+                    </p>
+                    <div class="d-flex align-items-center text-primary fw-semibold small">
+                        Lihat Rincian Pekerjaan <i class="bi bi-arrow-right ms-2"></i>
+                    </div>
+                </a>
+            </div>
+            @empty
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-clipboard-x display-1 text-light"></i>
+                <p class="text-muted mt-3">Belum ada data kategori pemeliharaan.</p>
+            </div>
+            @endforelse
+        </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <footer class="text-center py-4 text-muted small">
+        &copy; 2026 BPS Kota Bontang - Aplikasi Kartu Kendali Pemeliharaan
+    </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
