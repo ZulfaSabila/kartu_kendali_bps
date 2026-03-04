@@ -7,14 +7,10 @@ use Illuminate\Http\Request;
 
 class KategoriController extends Controller
 {
+    // Method index bisa dinonaktifkan atau diarahkan ke dashboard
     public function index()
     {
-        $kategoris = Kategori::where('user_id', auth()->id())
-                            ->withCount('pemeliharaans')
-                            ->latest()
-                            ->paginate(10);
-        
-        return view('kategoris.index', compact('kategoris'));
+        return redirect()->route('dashboard');
     }
 
     public function create()
@@ -33,26 +29,9 @@ class KategoriController extends Controller
 
         Kategori::create($validated);
 
-        return redirect()->route('kategoris.index')
+        // Langsung arahkan ke Dashboard setelah tambah kategori
+        return redirect()->route('dashboard')
                         ->with('success', 'Kategori berhasil ditambahkan!');
-    }
-
-    public function show(Kategori $kategori)
-    {
-        // Pastikan user hanya bisa akses kategori miliknya
-        if ($kategori->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $pemeliharaans = $kategori->pemeliharaans()
-                                 ->latest()
-                                 ->paginate(10);
-        
-        $totalBiaya = $kategori->pemeliharaans()->sum('biaya');
-        $totalPagu = $kategori->pemeliharaans()->sum('pagu');
-        $sisaAnggaran = $totalPagu - $totalBiaya;
-
-        return view('kategoris.show', compact('kategori', 'pemeliharaans', 'totalBiaya', 'totalPagu', 'sisaAnggaran'));
     }
 
     public function edit(Kategori $kategori)
@@ -77,8 +56,9 @@ class KategoriController extends Controller
 
         $kategori->update($validated);
 
-        return redirect()->route('kategoris.index')
-                        ->with('success', 'Kategori berhasil diupdate!');
+        // SETELAH EDIT: Kembali ke halaman barang kategori tersebut, bukan ke kelola kategori
+        return redirect()->route('barangs.index', ['kategori_id' => $kategori->id])
+                        ->with('success', 'Nama Kategori berhasil diperbarui!');
     }
 
     public function destroy(Kategori $kategori)
@@ -89,7 +69,8 @@ class KategoriController extends Controller
 
         $kategori->delete();
 
-        return redirect()->route('kategoris.index')
-                        ->with('success', 'Kategori berhasil dihapus!');
+        // SETELAH HAPUS: Kembali ke dashboard karena kategori sudah tidak ada
+        return redirect()->route('dashboard')
+                        ->with('success', 'Kategori dan seluruh aset di dalamnya berhasil dihapus!');
     }
 }

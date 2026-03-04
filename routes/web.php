@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PemeliharaanController;
+use App\Http\Controllers\BarangController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -15,6 +16,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // Kategori Routes
     Route::resource('kategoris', KategoriController::class);
+    
+    // Barang Routes
+    Route::resource('barangs', BarangController::class);
+    
+    // API untuk mendapatkan barang berdasarkan kategori
+    Route::get('/api/barangs-by-kategori/{kategoriId}', [BarangController::class, 'getByKategori'])->name('api.barangs.by-kategori');
     
     // Pemeliharaan Routes
     Route::resource('pemeliharaans', PemeliharaanController::class);

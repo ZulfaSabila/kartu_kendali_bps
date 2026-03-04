@@ -9,39 +9,33 @@ class Kategori extends Model
 {
     use HasFactory;
 
-    protected $table = 'kategoris';
+    protected $fillable = ['nama_kategori', 'deskripsi', 'user_id'];
 
-    protected $fillable = [
-        'nama_kategori',
-        'deskripsi',
-        'user_id'
-    ];
+    public function barangs()
+    {
+        return $this->hasMany(Barang::class);
+    }
 
-    // Relasi ke User
+    public function pemeliharaans()
+    {
+        return $this->hasManyThrough(Pemeliharaan::class, Barang::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relasi ke Pemeliharaan
-    public function pemeliharaans()
-    {
-        return $this->hasMany(Pemeliharaan::class);
-    }
-
-    // Hitung total biaya per kategori
-    public function getTotalBiayaAttribute()
-    {
-        return $this->pemeliharaans()->sum('biaya');
-    }
-
-    // Hitung total pagu per kategori
     public function getTotalPaguAttribute()
     {
         return $this->pemeliharaans()->sum('pagu');
     }
 
-    // Hitung sisa anggaran
+    public function getTotalBiayaAttribute()
+    {
+        return $this->pemeliharaans()->sum('biaya');
+    }
+
     public function getSisaAnggaranAttribute()
     {
         return $this->total_pagu - $this->total_biaya;

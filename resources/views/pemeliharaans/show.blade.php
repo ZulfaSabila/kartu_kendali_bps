@@ -3,109 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Pemeliharaan BMN - BPS Kota Bontang</title>
+    <title>Detail Pemeliharaan - BPS</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        :root { --bps-blue: #003366; --bps-cyan: #00AEEF; --bps-green: #77B02A; --bps-orange: #F39200; }
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        .card-detail { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .detail-label { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.025em; margin-bottom: 4px; }
-        .detail-value { font-size: 1.05rem; font-weight: 600; color: #0f172a; margin-bottom: 20px; }
-        .finance-card { border-radius: 10px; padding: 15px; border-left: 5px solid; }
-        .progress { height: 12px; border-radius: 6px; }
+        :root { --bps-blue: #003366; --bps-light: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bps-light); }
+        .detail-card { border: 1px solid #e2e8f0; border-radius: 8px; background: white; overflow: hidden; }
+        .detail-header { background: var(--bps-blue); color: white; padding: 20px 30px; }
+        .section-title { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
+        .label { font-size: 0.8rem; color: #94a3b8; margin-bottom: 2px; }
+        .value { font-size: 0.95rem; font-weight: 600; color: #1e293b; margin-bottom: 20px; }
+        .finance-box { background: #f8fafc; border-radius: 6px; padding: 20px; border: 1px solid #e2e8f0; }
+        .btn-back { background: white; border: 1px solid #cbd5e1; color: #334155; font-weight: 600; padding: 8px 25px; border-radius: 6px; text-decoration: none; }
     </style>
 </head>
 <body>
     <div class="container py-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-bold m-0" style="color: var(--bps-blue);">Rincian Data Pemeliharaan</h2>
-                <p class="text-muted m-0 small">NUP BMN: {{ $pemeliharaan->nup_bmn }}</p>
-            </div>
-            <a href="{{ route('pemeliharaans.index') }}" class="btn btn-outline-secondary shadow-sm"><i class="bi bi-arrow-left me-2"></i>Kembali</a>
-        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="mb-4">
+                    <a href="{{ route('pemeliharaans.index') }}" class="btn-back">Kembali</a>
+                </div>
 
-        <div class="row g-4">
-            <div class="col-lg-8">
-                <div class="card card-detail p-4 bg-white mb-4">
-                    <h5 class="fw-bold mb-4 border-bottom pb-2">Informasi Aset & Lokasi</h5>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="detail-label">Kategori Barang</div>
-                            <div class="detail-value"><span class="badge px-3 py-2" style="background-color: var(--bps-cyan);">{{ $pemeliharaan->kategori->nama_kategori }}</span></div>
-                            <div class="detail-label">Nama Barang</div>
-                            <div class="detail-value text-primary">{{ $pemeliharaan->nama_barang }}</div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="detail-label">NUP BMN</div>
-                            <div class="detail-value">{{ $pemeliharaan->nup_bmn ?? '-' }}</div>
-                            <div class="detail-label">Merk/Type</div>
-                            <div class="detail-value">{{ $pemeliharaan->merk_type ?? '-' }}</div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="detail-label"><i class="bi bi-geo-alt-fill text-danger me-1"></i>Lokasi Penempatan</div>
-                            <div class="detail-value">{{ $pemeliharaan->lokasi }}</div>
-                        </div>
+                <div class="detail-card shadow-sm">
+                    <div class="detail-header">
+                        <h5 class="m-0 fw-bold">Rincian Data Pemeliharaan</h5>
+                        <small class="opacity-75">ID Transaksi: #{{ $pemeliharaan->id }}</small>
                     </div>
+                    
+                    <div class="card-body p-4 p-md-5">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="section-title">Informasi Aset</div>
+                                <div class="label">NUP BMN</div>
+                                <div class="value">{{ $pemeliharaan->barang->nup_bmn ?? '-' }}</div>
+                                
+                                <div class="label">Nama Barang</div>
+                                <div class="value">{{ $pemeliharaan->barang->nama_barang ?? '-' }}</div>
 
-                    <h5 class="fw-bold mt-2 mb-4 border-bottom pb-2">Detail Pengerjaan</h5>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="detail-label">Waktu Pelaksanaan</div>
-                            <div class="detail-value">
-                                <i class="bi bi-calendar-event me-2 text-muted"></i>{{ $pemeliharaan->tanggal_mulai ? $pemeliharaan->tanggal_mulai->format('d F Y') : '-' }} s/d {{ $pemeliharaan->tanggal_selesai ? $pemeliharaan->tanggal_selesai->format('d F Y') : '-' }}
+                                <div class="label">Lokasi Penempatan</div>
+                                <div class="value">{{ $pemeliharaan->barang->lokasi ?? '-' }}</div>
+                            </div>
+                            
+                            <div class="col-md-6 border-start ps-md-5">
+                                <div class="section-title">Detail Pekerjaan</div>
+                                <div class="label">Tanggal</div>
+                                <div class="value">{{ $pemeliharaan->tanggal_mulai ? $pemeliharaan->tanggal_mulai->format('d F Y') : '-' }}</div>
+                                
+                                <div class="label">Rincian Pekerjaan</div>
+                                <div class="value">{{ $pemeliharaan->rincian_pekerjaan }}</div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="detail-label">Durasi Pekerjaan</div>
-                            <div class="detail-value"><span class="text-dark">{{ $pemeliharaan->tanggal_mulai && $pemeliharaan->tanggal_selesai ? $pemeliharaan->tanggal_mulai->diffInDays($pemeliharaan->tanggal_selesai) . ' Hari' : '-' }}</span></div>
-                        </div>
-                        <div class="col-12">
-                            <div class="detail-label">Rincian Pekerjaan</div>
-                            <div class="p-3 bg-light rounded border text-muted" style="min-height: 80px;">{{ $pemeliharaan->rincian_pekerjaan ?? '-' }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4">
-                <div class="card card-detail p-4 bg-white">
-                    <h5 class="fw-bold mb-4 border-bottom pb-2">Status Anggaran</h5>
-                    <div class="finance-card mb-3" style="border-left-color: var(--bps-cyan); background-color: #f0f9ff;">
-                        <div class="detail-label text-primary">Biaya Perbaikan</div>
-                        <div class="h4 fw-bold m-0 text-primary">Rp {{ number_format($pemeliharaan->biaya, 0, ',', '.') }}</div>
-                    </div>
-                    
-                    <div class="finance-card mb-3" style="border-left-color: var(--bps-green); background-color: #f0fdf4;">
-                        <div class="detail-label text-success">Pagu Anggaran</div>
-                        <div class="h5 fw-bold m-0 text-success">Rp {{ number_format($pemeliharaan->pagu, 0, ',', '.') }}</div>
-                    </div>
-                    
-                    <div class="finance-card mb-4" style="border-left-color: {{ $pemeliharaan->sisa_anggaran >= 0 ? '#22c55e' : '#ef4444' }}; background-color: {{ $pemeliharaan->sisa_anggaran >= 0 ? '#f0fdf4' : '#fef2f2' }};">
-                        <div class="detail-label">Sisa Anggaran</div>
-                        <div class="h4 fw-bold m-0 {{ $pemeliharaan->sisa_anggaran >= 0 ? 'text-success' : 'text-danger' }}">
-                            Rp {{ number_format($pemeliharaan->sisa_anggaran, 0, ',', '.') }}
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-                    <div class="mt-2">
-                        @php $persentase = $pemeliharaan->pagu > 0 ? ($pemeliharaan->biaya / $pemeliharaan->pagu) * 100 : 0; @endphp
-                        <div class="d-flex justify-content-between small fw-bold mb-2">
-                            <span>Penyerapan</span>
-                            <span class="{{ $persentase > 100 ? 'text-danger' : 'text-muted' }}">{{ number_format($persentase, 1) }}%</span>
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="section-title">Informasi Keuangan</div>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="finance-box text-center">
+                                            <div class="label">Pagu Anggaran</div>
+                                            <div class="h5 fw-bold m-0 text-dark">Rp {{ number_format($pemeliharaan->pagu, 0, ',', '.') }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="finance-box text-center" style="border-top: 3px solid #ef4444;">
+                                            <div class="label">Biaya Realisasi</div>
+                                            <div class="h5 fw-bold m-0 text-danger">Rp {{ number_format($pemeliharaan->biaya, 0, ',', '.') }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="finance-box text-center" style="border-top: 3px solid #22c55e;">
+                                            <div class="label">Sisa Anggaran</div>
+                                            <div class="h5 fw-bold m-0 text-success">
+                                                Rp {{ number_format($pemeliharaan->pagu - $pemeliharaan->biaya_kumulatif, 0, ',', '.') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="progress shadow-sm mb-3">
-                            <div class="progress-bar {{ $persentase > 100 ? 'bg-danger' : 'bg-success' }}" role="progressbar" style="width: {{ min($persentase, 100) }}%"></div>
-                        </div>
-                        @if($persentase > 100)
-                            <div class="alert alert-danger py-2 px-3 small border-0 shadow-sm"><i class="bi bi-exclamation-triangle-fill me-2"></i>Melebihi Pagu!</div>
-                        @endif
                     </div>
                 </div>
+                <p class="text-center mt-4 text-muted small">Dicetak pada: {{ now()->format('d/m/Y H:i') }}</p>
             </div>
         </div>
     </div>

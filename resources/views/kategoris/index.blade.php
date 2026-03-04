@@ -5,149 +5,173 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Kategori - BPS Kota Bontang</title>
 
-    <!-- Bootstrap CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
+        :root {
+            --bps-blue: #003366;
+            --bps-green: #77B02A;
+            --bps-cyan: #00AEEF;
+            --bps-light: #f8fafc;
+        }
+
         body {
-            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bps-light);
+            color: #334155;
         }
-        .table-dark {
-            background-color: #003366 !important;
+
+        .header-title {
+            color: var(--bps-blue);
+            font-weight: 700;
         }
-        .btn {
-            transition: all 0.2s ease-in-out;
+
+        .card-bps {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
-        .btn:hover {
-            transform: scale(1.03);
+
+        .table thead th {
+            background-color: #f1f5f9;
+            color: #475569;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+            border: none;
+            padding: 1rem;
+        }
+
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+
+        .badge-count {
+            background-color: var(--bps-blue);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.35em 0.65em;
+            border-radius: 50rem;
         }
     </style>
 </head>
 
 <body>
     <div class="container py-5">
-
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="h3 mb-1" style="color: #003366;">
-                    <i class="bi bi-folder-fill me-2"></i> Kelola Kategori Pemeliharaan
-                </h1>
-                <p class="text-muted mb-0">Daftar kategori barang yang dapat dipelihara</p>
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-7">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Kategori</li>
+                    </ol>
+                </nav>
+                <h1 class="header-title h3 mb-0">Kelola Kategori Aset</h1>
             </div>
-
-            <!-- Kembali ke Dashboard -->
-            <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary shadow-sm">
-                <i class="bi bi-arrow-left me-1"></i> Kembali
-            </a>
+            <div class="col-md-5 text-md-end">
+                <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary px-4 shadow-sm">
+                    <i class="bi bi-house me-2"></i>Dashboard
+                </a>
+            </div>
         </div>
 
-        <!-- Success Alert -->
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
-        <!-- Tabel -->
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-
+        <div class="card card-bps">
+            <div class="card-body p-0">
                 @if($kategoris->isEmpty())
                     <div class="text-center py-5">
-                        <i class="bi bi-folder-x" style="font-size: 3rem; color: #ccc;"></i>
-                        <p class="text-center text-muted my-4">Belum ada kategori.</p>
+                        <img src="https://illustrations.popsy.co/slate/empty-folder.svg" alt="Kosong" style="width: 200px;" class="mb-3">
+                        <h5 class="text-secondary">Belum ada kategori yang dibuat</h5>
+                        <p class="text-muted">Gunakan menu tambah untuk membuat kategori baru.</p>
                     </div>
                 @else
-
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered align-middle text-center mb-0">
-                        <thead class="table-dark">
-                            <tr>
-                                <th width="5%">No</th>
-                                <th width="25%">Nama Kategori</th>
-                                <th width="40%">Deskripsi</th>
-                                <th width="10%">Jumlah Data</th>
-                                <th width="12%">Tanggal Dibuat</th>
-                                <th width="8%">Aksi</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            @foreach($kategoris as $index => $kategori)
-                            <tr>
-                                <td>{{ $kategoris->firstItem() + $index }}</td>
-                                
-                                <td class="text-start">
-                                    <i class="bi bi-folder-fill me-2" style="color: #77B02A;"></i>
-                                    <strong>{{ $kategori->nama_kategori }}</strong>
-                                </td>
-                                
-                                <td class="text-start">
-                                    <small class="text-muted">{{ $kategori->deskripsi ?? '-' }}</small>
-                                </td>
-                                
-                                <td>
-                                    <span class="badge" style="background-color: #00AEEF;">
-                                        {{ $kategori->pemeliharaans_count }} Data
-                                    </span>
-                                </td>
-                                
-                                <td>
-                                    <small>{{ $kategori->created_at->format('d/m/Y') }}</small>
-                                </td>
-                                
-                                <td>
-                                    <div class="d-flex justify-content-center gap-1">
-
-                                        <!-- Edit -->
-                                        <a href="{{ route('kategoris.edit', $kategori->id) }}" 
-                                           class="btn btn-warning btn-sm" 
-                                           title="Edit">
-                                            <i class="bi bi-pencil-square"></i>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">No</th>
+                                    <th>Nama Kategori</th>
+                                    <th>Deskripsi</th>
+                                    <th class="text-center">Jumlah Barang</th>
+                                    <th class="text-end pe-4">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($kategoris as $index => $kategori)
+                                <tr>
+                                    <td class="ps-4 text-muted">{{ $kategoris->firstItem() + $index }}</td>
+                                    <td>
+                                        <a href="{{ route('barangs.index', ['kategori_id' => $kategori->id]) }}" class="text-decoration-none fw-semibold text-dark hover-primary">
+                                            {{ $kategori->nama_kategori }}
                                         </a>
-
-                                        <!-- Hapus -->
-                                        <form action="{{ route('kategoris.destroy', $kategori->id) }}" 
-                                              method="POST" 
-                                              class="d-inline"
-                                              onsubmit="return confirm('Yakin ingin menghapus kategori {{ $kategori->nama_kategori }}? Semua data pemeliharaan dalam kategori ini akan ikut terhapus!')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
-
-                                    </div>
-                                </td>
-
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                @if($kategoris->hasPages())
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $kategoris->links('pagination::bootstrap-5') }}
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">
+                                            {{ Str::limit($kategori->deskripsi ?? 'Tidak ada deskripsi', 50) }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge-count">
+                                            {{ $kategori->barangs_count ?? $kategori->barangs->count() }} Item
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <a href="{{ route('kategoris.edit', $kategori) }}" class="btn-action bg-warning bg-opacity-10 text-warning border-0" title="Edit Kategori">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <form action="{{ route('kategoris.destroy', $kategori) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kategori {{ $kategori->nama_kategori }}? Tindakan ini tidak dapat dibatalkan.')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-action bg-danger bg-opacity-10 text-danger border-0" title="Hapus Kategori">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                @endif
 
+                    @if($kategoris->hasPages())
+                        <div class="card-footer bg-white border-0 py-4">
+                            <div class="d-flex justify-content-center">
+                                {{ $kategoris->links('pagination::bootstrap-5') }}
+                            </div>
+                        </div>
+                    @endif
                 @endif
-
             </div>
         </div>
 
+        <div class="text-center mt-5 mb-4">
+            <p class="text-muted small">© 2026 Badan Pusat Statistik Kota Bontang - Divisi Umum</p>
+        </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

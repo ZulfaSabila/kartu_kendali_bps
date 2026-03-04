@@ -9,52 +9,38 @@ class Pemeliharaan extends Model
 {
     use HasFactory;
 
-    protected $table = 'pemeliharaans';
-
     protected $fillable = [
+        'user_id',
         'kategori_id',
-        'nup_bmn',
-        'nama_barang',
-        'merk_type',
-        'lokasi',
+        'barang_id',
         'tanggal_mulai',
         'tanggal_selesai',
         'rincian_pekerjaan',
         'biaya',
+        'biaya_kumulatif', // Diaktifkan untuk input manual
         'pagu',
-        'user_id'
     ];
 
     protected $casts = [
         'tanggal_mulai' => 'date',
         'tanggal_selesai' => 'date',
         'biaya' => 'decimal:2',
-        'pagu' => 'decimal:2'
+        'biaya_kumulatif' => 'decimal:2',
+        'pagu' => 'decimal:2',
     ];
 
-    // Relasi ke Kategori
-    public function kategori()
-    {
-        return $this->belongsTo(Kategori::class);
-    }
-
-    // Relasi ke User
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Hitung biaya kumulatif (untuk satu kategori)
-    public function getBiayaKumulatifAttribute()
+    public function kategori()
     {
-        return self::where('kategori_id', $this->kategori_id)
-                   ->where('id', '<=', $this->id)
-                   ->sum('biaya');
+        return $this->belongsTo(Kategori::class);
     }
 
-    // Hitung sisa anggaran per item
-    public function getSisaAnggaranAttribute()
+    public function barang()
     {
-        return $this->pagu - $this->biaya;
+        return $this->belongsTo(Barang::class);
     }
 }

@@ -2,34 +2,26 @@
 
 namespace App\Exports;
 
-use App\Models\Pemeliharaan;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\WithStyles;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PemeliharaanExport implements FromCollection, WithHeadings, WithMapping, WithStyles
+class PemeliharaanExport implements FromCollection, WithHeadings, WithMapping
 {
-    protected $kategori_id;
+    protected $data;
 
-    public function __construct($kategori_id = null)
+    // Konstruktor menerima data dari Controller
+    public function __construct($data)
     {
-        $this->kategori_id = $kategori_id;
+        $this->data = $data;
     }
 
     public function collection()
     {
-        $query = Pemeliharaan::where('user_id', auth()->id())
-                            ->with('kategori');
-
-        if ($this->kategori_id) {
-            $query->where('kategori_id', $this->kategori_id);
-        }
-
-        return $query->get();
+        return $this->data;
     }
 
+    // Header kolom sesuai gambar excel yang Anda kirim
     public function headings(): array
     {
         return [
@@ -37,7 +29,7 @@ class PemeliharaanExport implements FromCollection, WithHeadings, WithMapping, W
             'Kategori',
             'NUP BMN',
             'Nama Barang',
-            'Merk/Type',
+            'Merk/Typ',
             'Lokasi',
             'Tanggal Mulai',
             'Tanggal Selesai',
@@ -45,36 +37,30 @@ class PemeliharaanExport implements FromCollection, WithHeadings, WithMapping, W
             'Biaya (Rp)',
             'Biaya Kumulatif (Rp)',
             'Pagu (Rp)',
-            'Sisa Anggaran (Rp)'
+            'Sisa Anggaran (Rp)',
         ];
     }
 
-    public function map($pemeliharaan): array
+    // Mapping data per kolom agar tidak kosong
+    public function map($p): array
     {
         static $no = 0;
         $no++;
-
+        
         return [
             $no,
-            $pemeliharaan->kategori->nama_kategori,
-            $pemeliharaan->nup_bmn,
-            $pemeliharaan->nama_barang,
-            $pemeliharaan->merk_type,
-            $pemeliharaan->lokasi,
-            $pemeliharaan->tanggal_mulai ? $pemeliharaan->tanggal_mulai->format('d/m/Y') : '-',
-            $pemeliharaan->tanggal_selesai ? $pemeliharaan->tanggal_selesai->format('d/m/Y') : '-',
-            $pemeliharaan->rincian_pekerjaan,
-            number_format($pemeliharaan->biaya, 0, ',', '.'),
-            number_format($pemeliharaan->biaya_kumulatif, 0, ',', '.'),
-            number_format($pemeliharaan->pagu, 0, ',', '.'),
-            number_format($pemeliharaan->sisa_anggaran, 0, ',', '.')
-        ];
-    }
-
-    public function styles(Worksheet $sheet)
-    {
-        return [
-            1 => ['font' => ['bold' => true]],
+            $p->barang->kategori->nama_kategori ?? '-',
+            $p->barang->nup_bmn ?? '-',
+            $p->barang->nama_barang ?? '-',
+            $p->barang->merk_type ?? '-',
+            $p->barang->lokasi ?? '-',
+            $p->tanggal_mulai ? $p->tanggal_mulai->format('d/m/Y') : '-',
+            $p->tanggal_selesai ? $p->tanggal_selesai->format('d/m/Y') : '-',
+            $p->rincian_pekerjaan,
+            $p->biaya,
+            $p->biaya_kumulatif,
+            $p->pagu,
+            ($p->pagu - $p->biaya_kumulatif),
         ];
     }
 }

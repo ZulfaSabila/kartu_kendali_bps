@@ -24,18 +24,13 @@
             color: #334155;
         }
 
-        /* Navbar Modern */
         .navbar-bps {
             background-color: var(--bps-dark-blue);
             border-bottom: 4px solid var(--bps-green);
         }
 
-        .logo-text {
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
+        .logo-text { font-weight: 700; letter-spacing: -0.5px; }
 
-        /* Card Stats */
         .stat-card {
             border: none;
             border-radius: 12px;
@@ -44,9 +39,7 @@
             transition: transform 0.2s;
         }
 
-        .stat-card:hover {
-            transform: translateY(-3px);
-        }
+        .stat-card:hover { transform: translateY(-3px); }
 
         .stat-icon-wrapper {
             width: 48px;
@@ -58,14 +51,12 @@
             margin-bottom: 1rem;
         }
 
-        /* Category Card */
         .kategori-card {
             border: 1px solid #e2e8f0;
             border-radius: 12px;
             background: #fff;
             transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
+            position: relative;
         }
 
         .kategori-card:hover {
@@ -77,13 +68,12 @@
             color: var(--bps-blue);
             font-weight: 600;
             font-size: 1.1rem;
+            text-decoration: none;
         }
 
-        .progress {
-            height: 8px;
-            border-radius: 10px;
-            background-color: #e2e8f0;
-        }
+        .card-category-title:hover { color: var(--bps-accent); }
+
+        .progress { height: 8px; border-radius: 10px; background-color: #e2e8f0; }
 
         .section-header {
             border-left: 5px solid var(--bps-green);
@@ -98,9 +88,12 @@
             font-weight: 500;
         }
 
-        .btn-bps-primary:hover {
-            background-color: var(--bps-dark-blue);
-            color: white;
+        .btn-bps-primary:hover { background-color: var(--bps-dark-blue); color: white; }
+
+        /* Styling baru untuk tombol aksi kategori */
+        .category-action-overlay {
+            display: flex;
+            gap: 5px;
         }
     </style>
 </head>
@@ -127,19 +120,19 @@
 
     <div class="container py-5">
         
-        <div class="row align-items-center mb-4">
-            <div class="col-md-6">
-                <div class="section-header">
-                    <h2 class="fw-bold m-0">Ringkasan Anggaran 2026</h2>
-                    <p class="text-muted m-0">Pemeliharaan BMN BPS Kota Bontang</p>
-                </div>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <a href="{{ route('kategoris.create') }}" class="btn btn-bps-primary px-4">
-                    <i class="bi bi-plus-lg me-2"></i>Tambah Kategori
-                </a>
-            </div>
+    <div class="row align-items-center mb-4">
+        <div class="col-md-6">
+        <div class="section-header">
+            <h2 class="fw-bold m-0">Ringkasan Anggaran {{ date('Y') }}</h2>
+            <p class="text-muted m-0">Pemeliharaan BMN BPS Kota Bontang</p>
         </div>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <a href="{{ route('kategoris.create') }}" class="btn btn-bps-primary px-4 shadow-sm">
+            <i class="bi bi-plus-lg me-2"></i>Tambah Kategori
+        </a>
+    </div>
+</div>
 
         <div class="row g-4 mb-5">
             <div class="col-md-3">
@@ -204,18 +197,39 @@
         <div class="row g-4">
             @forelse($kategoris as $kategori)
             <div class="col-md-4">
-                <a href="{{ route('pemeliharaans.index', ['kategori_id' => $kategori->id]) }}" class="kategori-card d-block p-4">
+                <div class="kategori-card p-4">
                     <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="card-category-title">{{ $kategori->nama_kategori }}</div>
+                        <a href="{{ route('barangs.index', ['kategori_id' => $kategori->id]) }}" class="card-category-title text-decoration-none">
+                            {{ $kategori->nama_kategori }}
+                        </a>
                         <span class="badge bg-light text-dark border">{{ $kategori->pemeliharaans_count }} Data</span>
                     </div>
+                    
                     <p class="text-muted small mb-4">
                         {{ $kategori->deskripsi ?? 'Tidak ada deskripsi kategori.' }}
                     </p>
-                    <div class="d-flex align-items-center text-primary fw-semibold small">
-                        Lihat Rincian Pekerjaan <i class="bi bi-arrow-right ms-2"></i>
+
+                    <hr class="my-3 opacity-50">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ route('barangs.index', ['kategori_id' => $kategori->id]) }}" class="text-primary fw-semibold small text-decoration-none">
+                            Lihat Barang <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                        
+                        <div class="category-action-overlay">
+                            <a href="{{ route('kategoris.edit', $kategori->id) }}" class="btn btn-sm btn-outline-warning btn-action-square" title="Edit Kategori">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form action="{{ route('kategoris.destroy', $kategori->id) }}" method="POST" class="d-inline" onsubmit="return confirm('⚠️ PERINGATAN: Menghapus kategori akan menghapus SELURUH data barang dan riwayat pemeliharaan di dalamnya. Lanjutkan?')">
+                                @csrf 
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger btn-action-square" title="Hapus Kategori">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </a>
+                </div>
             </div>
             @empty
             <div class="col-12 text-center py-5">

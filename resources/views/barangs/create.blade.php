@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Kategori - BPS Kota Bontang</title>
+    <title>Tambah Data Barang - BPS Kota Bontang</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -81,45 +81,60 @@
             border-radius: 8px;
             text-decoration: none;
         }
-
+        
         .btn-cancel:hover {
             background-color: #f1f5f9;
             color: #334155;
         }
     </style>
 </head>
-
 <body>
     <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
+            <div class="col-lg-10">
                 <div class="card card-bps">
-                    <div class="card-header-bps text-white">
-                        <h5 class="mb-0 fw-bold">Tambah Kategori Baru</h5>
+                    <div class="card-header-bps">
+                        <h5 class="mb-0 fw-bold">Tambah Data Barang / Aset</h5>
                     </div>
 
                     <div class="card-body p-4 p-md-5 bg-white">
-                        <form action="{{ route('kategoris.store') }}" method="POST">
+                        <form action="{{ route('barangs.store') }}" method="POST">
                             @csrf
-                            
-                            <div class="mb-4">
-                                <label class="form-label">Nama Kategori <span class="text-danger">*</span></label>
-                                <input type="text" name="nama_kategori" 
-                                       class="form-control @error('nama_kategori') is-invalid @enderror" 
-                                       value="{{ old('nama_kategori') }}" 
-                                       placeholder="Misal: Peralatan IT / Kendaraan" required>
-                                @error('nama_kategori') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
+                            <input type="hidden" name="kategori_id" value="{{ $selectedKategori }}">
 
-                            <div class="mb-4">
-                                <label class="form-label">Deskripsi Kategori</label>
-                                <textarea name="deskripsi" class="form-control" rows="3" 
-                                          placeholder="Tuliskan keterangan singkat mengenai kategori ini..."></textarea>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">NUP BMN</label>
+                                    <input type="text" name="nup_bmn" class="form-control @error('nup_bmn') is-invalid @enderror" 
+                                           value="{{ old('nup_bmn') }}" placeholder="Masukkan NUP">
+                                    @error('nup_bmn') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Nama Barang</label>
+                                    <input type="text" name="nama_barang" class="form-control @error('nama_barang') is-invalid @enderror" 
+                                           value="{{ old('nama_barang') }}" placeholder="Masukkan Nama Barang">
+                                    @error('nama_barang') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Merk / Tipe</label>
+                                    <input type="text" name="merk_type" class="form-control @error('merk_type') is-invalid @enderror" 
+                                           value="{{ old('merk_type') }}" placeholder="Masukkan Merk/Tipe">
+                                    @error('merk_type') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Lokasi Penempatan</label>
+                                    <input type="text" name="lokasi" class="form-control @error('lokasi') is-invalid @enderror" 
+                                           value="{{ old('lokasi', 'Bontang') }}">
+                                    @error('lokasi') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                </div>
                             </div>
 
                             <div class="d-flex justify-content-between mt-5 pt-4 border-top">
-                                <a href="{{ route('dashboard') }}" class="btn-cancel">Batal</a>
-                                <button type="submit" class="btn-bps-blue shadow-sm">Simpan Kategori</button>
+                                <a href="{{ route('barangs.index', ['kategori_id' => $selectedKategori]) }}" class="btn-cancel">Batal</a>
+                                <button type="submit" class="btn-bps-blue shadow-sm">Simpan Data Barang</button>
                             </div>
                         </form>
                     </div>

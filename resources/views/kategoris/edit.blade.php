@@ -61,19 +61,13 @@
                                 @enderror
                             </div>
 
-                            <!-- Info Jumlah Item -->
-                            <div class="alert alert-info" role="alert">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <strong>Jumlah Item:</strong> {{ $kategori->pemeliharaans_count }} barang pemeliharaan
-                            </div>
-
                             <!-- Buttons -->
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{{ route('kategoris.index') }}" class="btn btn-secondary">
-                                    <i class="bi bi-arrow-left"></i> Batal
+                                </i> Batal
                                 </a>
                                 <button type="submit" class="btn text-white" style="background-color: #F39200;">
-                                    <i class="bi bi-save"></i> Update Kategori
+                                </i> Update Kategori
                                 </button>
                             </div>
 
