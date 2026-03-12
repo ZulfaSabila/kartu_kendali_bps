@@ -104,7 +104,7 @@ class BarangController extends Controller
         $barang->update($validated);
 
         return redirect()->route('barangs.index', ['kategori_id' => $request->kategori_id])
-            ->with('success', 'Data barang berhasil diupdate!');
+            ->with('success', 'Data barang berhasil diperbarui!');
     }
 
     public function destroy(Barang $barang)

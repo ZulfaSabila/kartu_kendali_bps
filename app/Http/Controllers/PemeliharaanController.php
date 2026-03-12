@@ -42,7 +42,7 @@ class PemeliharaanController extends Controller
         }
 
         // Urutan kronologis (Lama ke Baru) sesuai gambar Kartu Kendali
-        $pemeliharaans = $query->orderBy('tanggal_mulai', 'asc')->paginate(15);
+        $pemeliharaans = $query->orderBy('tanggal_mulai', 'asc')->paginate(20);
         
         // Mengambil data barang yang sedang dipilih untuk informasi di header
         $selectedBarang = null;
@@ -109,7 +109,7 @@ class PemeliharaanController extends Controller
         $pemeliharaan->update($validated);
 
         return redirect()->route('pemeliharaans.index', ['barang_id' => $pemeliharaan->barang_id])
-                        ->with('success', 'Data pemeliharaan berhasil diupdate!');
+                        ->with('success', 'Data pemeliharaan berhasil diperbarui!');
     }
 
     public function destroy(Pemeliharaan $pemeliharaan)
@@ -135,16 +135,4 @@ class PemeliharaanController extends Controller
         $pdf = Pdf::loadView('pemeliharaans.pdf', compact('groupedData'))->setPaper('a4', 'landscape');
         return $pdf->download('kartu-kendali-' . date('Y-m-d') . '.pdf');
     }
-
-    public function exportExcel(Request $request)
-    {
-        // Pastikan Anda mengirimkan collection data ke constructor export
-        $query = Pemeliharaan::where('user_id', auth()->id())->with('barang.kategori');
-        if ($request->filled('barang_id')) {
-            $query->where('barang_id', $request->barang_id);
-        }
-        $data = $query->orderBy('tanggal_mulai', 'asc')->get();
-
-        return Excel::download(new PemeliharaanExport($data), 'kartu-kendali-' . date('Y-m-d') . '.xlsx');
-    }
-}
+            }

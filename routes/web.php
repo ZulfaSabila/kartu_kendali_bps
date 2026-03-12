@@ -26,7 +26,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Pemeliharaan Routes
     Route::resource('pemeliharaans', PemeliharaanController::class);
     Route::get('pemeliharaans/export/pdf', [PemeliharaanController::class, 'exportPdf'])->name('pemeliharaans.export.pdf');
-    Route::get('pemeliharaans/export/excel', [PemeliharaanController::class, 'exportExcel'])->name('pemeliharaans.export.excel');
 });
 
 Route::middleware('auth')->group(function () {

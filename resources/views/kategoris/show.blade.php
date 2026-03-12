@@ -89,7 +89,7 @@
                                                 <form action="{{ route('pemeliharaans.destroy', $pemeliharaan) }}" method="POST" class="inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
+                                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Yakin ingin menghapus data ini? Tindakan tidak dapat dibatalkan.')">Hapus</button>
                                                 </form>
                                             </td>
                                         </tr>

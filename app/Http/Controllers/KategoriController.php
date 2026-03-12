@@ -31,7 +31,7 @@ class KategoriController extends Controller
 
         // Langsung arahkan ke Dashboard setelah tambah kategori
         return redirect()->route('dashboard')
-                        ->with('success', 'Kategori berhasil ditambahkan!');
+                        ->with('success', 'Data Kategori berhasil ditambahkan!');
     }
 
     public function edit(Kategori $kategori)
@@ -57,8 +57,8 @@ class KategoriController extends Controller
         $kategori->update($validated);
 
         // SETELAH EDIT: Kembali ke halaman barang kategori tersebut, bukan ke kelola kategori
-        return redirect()->route('barangs.index', ['kategori_id' => $kategori->id])
-                        ->with('success', 'Nama Kategori berhasil diperbarui!');
+        return redirect()->route('dashboard', ['kategori_id' => $kategori->id])
+                        ->with('success', 'Data kategori berhasil diperbarui!');
     }
 
     public function destroy(Kategori $kategori)
@@ -71,6 +71,6 @@ class KategoriController extends Controller
 
         // SETELAH HAPUS: Kembali ke dashboard karena kategori sudah tidak ada
         return redirect()->route('dashboard')
-                        ->with('success', 'Kategori dan seluruh aset di dalamnya berhasil dihapus!');
+                        ->with('success', 'Data Kategori dan seluruh aset di dalamnya berhasil dihapus!');
     }
 }

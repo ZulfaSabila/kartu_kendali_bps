@@ -10,18 +10,19 @@ return new class extends Migration
     {
         Schema::create('pemeliharaans', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('kategori_id')->constrained('kategoris')->onDelete('cascade');
-            $table->string('nup_bmn')->nullable();
-            $table->string('nama_barang')->nullable();
-            $table->string('merk_type')->nullable();
-            $table->string('lokasi')->default('Bontang');
+            $table->foreignId('barang_id')->constrained('barangs')->onDelete('cascade');
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_selesai')->nullable();
             $table->text('rincian_pekerjaan')->nullable();
             $table->decimal('biaya', 15, 2)->default(0);
+            $table->decimal('biaya_kumulatif', 15, 2)->default(0);
             $table->decimal('pagu', 15, 2)->default(0);
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+
+            $table->index(['user_id', 'barang_id']);
+            $table->index('tanggal_mulai');
         });
     }
 

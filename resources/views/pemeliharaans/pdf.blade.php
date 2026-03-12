@@ -21,16 +21,13 @@
         .info-table td { padding: 3px 5px; font-size: 10px; }
         
         .main-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .main-table th { background-color: #003366; color: white; padding: 8px 5px; border: 1px solid #ddd; text-transform: uppercase; font-size: 9px; }
+        .main-table th { background-color: #003366; color: white; padding: 8px 5px; border: 1px solid #ddd; text-transform: uppercase; font-size: 8px; }
         .main-table td { padding: 8px 5px; border: 1px solid #ddd; vertical-align: middle; }
         
         .text-center { text-align: center; }
         .text-right { text-align: right; }
         .bg-light { background-color: #f9f9f9; }
         .page-break { page-break-after: always; }
-        
-        .summary-box { margin-top: 10px; border: 1px solid #003366; padding: 10px; border-radius: 5px; }
-        .summary-box table { width: 100%; border-collapse: collapse; }
     </style>
 </head>
 <body>
@@ -63,13 +60,14 @@
         <table class="main-table">
             <thead>
                 <tr>
-                    <th width="5%">NO</th>
-                    <th width="12%">TANGGAL</th>
-                    <th width="28%">RINCIAN PEKERJAAN</th>
-                    <th width="13%">BIAYA (Rp)</th>
-                    <th width="15%">BIAYA KUMULATIF (Rp)</th>
-                    <th width="13%">PAGU (Rp)</th>
-                    <th width="14%">SISA ANGGARAN (Rp)</th>
+                    <th width="4%">NO</th>
+                    <th width="12%">TANGGAL MULAI PEKERJAAN</th>
+                    <th width="12%">TANGGAL SELESAI PEKERJAAN</th>
+                    <th width="14%">RINCIAN PEKERJAAN</th>
+                    <th width="11%">BIAYA (Rp)</th>
+                    <th width="11%">KUMULATIF (Rp)</th>
+                    <th width="11%">PAGU (Rp)</th>
+                    <th width="11%">SISA (Rp)</th>
                 </tr>
             </thead>
             <tbody>
@@ -81,6 +79,7 @@
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="text-center">{{ $p->tanggal_mulai ? $p->tanggal_mulai->format('d/m/Y') : '-' }}</td>
+                        <td class="text-center">{{ $p->tanggal_selesai ? $p->tanggal_selesai->format('d/m/Y') : '-' }}</td>
                         <td>{{ $p->rincian_pekerjaan }}</td>
                         <td class="text-right">{{ number_format($p->biaya, 0, ',', '.') }}</td>
                         <td class="text-right bg-light">{{ number_format($biayaKumulatif, 0, ',', '.') }}</td>
@@ -91,7 +90,6 @@
             </tbody>
         </table>
 
-        {{-- Section Summary yang Diperbaiki agar lebih Rapi dan Resmi --}}
         <div style="width: 100%; margin-top: 20px;">
             <table style="width: 350px; margin-left: auto; border-collapse: collapse;">
                 <tr>
@@ -106,7 +104,6 @@
                         Rp {{ number_format($totalPagu, 0, ',', '.') }}
                     </td>
                 </tr>
-                {{-- Garis Ganda untuk Kesan Laporan Resmi --}}
                 <tr>
                     <td colspan="2" style="border-top: 3px double #333; padding: 0;"></td>
                 </tr>

@@ -3,130 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Kategori - BPS Kota Bontang</title>
+    <title>Tambah Kategori — Kartu Kendali BPS Kota Bontang</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        /* ── VARIABEL WARNA BPS ── */
         :root {
             --bps-blue: #003366;
-            --bps-dark: #002347;
+            --bps-blue-dark: #002244;
+            --bps-orange: #E8751A;
             --bps-green: #77B02A;
-            --bps-light: #f8fafc;
+            --bg-body: #f8fafc;
+            --border-color: #e2e8f0;
+            --white: #ffffff;
         }
 
+        /* ── BASE STYLING ── */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bps-light);
-            color: #334155;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
         }
 
+        .container-form {
+            width: 100%;
+            max-width: 620px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* ── CARD STYLING ── */
         .card-bps {
+            background: var(--white);
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
 
         .card-header-bps {
             background-color: var(--bps-blue);
-            border-bottom: 3px solid var(--bps-green);
-            padding: 1.5rem;
-            color: white;
+            padding: 30px;
+            position: relative;
         }
 
+        /* Aksen Oranye di bawah Header (Konsisten dengan Navbar) */
+        .card-header-bps::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--bps-orange);
+        }
+
+        .header-title {
+            color: var(--white);
+            font-weight: 800;
+            font-size: 1.25rem;
+            margin: 0;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-title i {
+            margin-right: 12px;
+            font-size: 1.5rem;
+            color: var(--bps-orange);
+        }
+
+        .card-body-bps {
+            padding: 40px;
+        }
+
+        /* ── FORM CONTROL STYLING ── */
         .form-label {
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.025em;
+            letter-spacing: 1px;
+            color: #64748b;
+            margin-bottom: 8px;
         }
 
         .form-control {
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            color: #1e293b;
+            transition: all 0.2s;
+            background-color: #ffffff;
         }
 
         .form-control:focus {
             border-color: var(--bps-blue);
-            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+            box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.1);
+            outline: none;
         }
 
-        /* Tombol Biru Konsisten */
+        .form-control::placeholder {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Handling Error Laravel */
+        .is-invalid {
+            border-color: #ef4444 !important;
+        }
+        .invalid-feedback {
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        /* ── BUTTON STYLING ── */
         .btn-bps-blue {
             background-color: var(--bps-blue);
-            color: white;
-            font-weight: 700;
-            padding: 10px 35px;
-            border-radius: 8px;
+            color: var(--white);
             border: none;
-            transition: all 0.2s;
+            padding: 12px 35px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s;
         }
 
         .btn-bps-blue:hover {
-            background-color: var(--bps-dark);
-            color: white;
-            transform: translateY(-1px);
+            background-color: var(--bps-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 51, 102, 0.2);
+            color: var(--white);
         }
 
         .btn-cancel {
-            background-color: white;
+            background-color: transparent;
             color: #64748b;
             border: 1px solid #cbd5e1;
-            font-weight: 600;
-            padding: 10px 30px;
-            border-radius: 8px;
+            padding: 12px 35px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
             text-decoration: none;
         }
 
         .btn-cancel:hover {
             background-color: #f1f5f9;
-            color: #334155;
+            color: #1e293b;
+            border-color: #94a3b8;
+        }
+
+        /* ── FOOTER ── */
+        .footer-text {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 576px) {
+            .card-body-bps { padding: 30px 20px; }
+            .btn-bps-blue, .btn-cancel { width: 100%; margin-bottom: 10px; }
+            .d-flex-mobile { flex-direction: column-reverse; }
         }
     </style>
 </head>
-
 <body>
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card card-bps">
-                    <div class="card-header-bps text-white">
-                        <h5 class="mb-0 fw-bold">Tambah Kategori Baru</h5>
+
+    <div class="container-form">
+        <div class="card-bps">
+            {{-- ══ HEADER ══ --}}
+            <div class="card-header-bps">
+                <h2 class="header-title">
+                    <i class="bi bi-folder-plus"></i>
+                    Tambah Kategori Baru
+                </h2>
+            </div>
+
+            {{-- ══ FORM BODY ══ --}}
+            <div class="card-body-bps">
+                <form action="{{ route('kategoris.store') }}" method="POST">
+                    @csrf
+
+                    {{-- Nama Kategori --}}
+                    <div class="mb-4">
+                        <label class="form-label">Nama Kategori</label>
+                        <input type="text" name="nama_kategori" 
+                               class="form-control @error('nama_kategori') is-invalid @enderror" 
+                               value="{{ old('nama_kategori') }}" 
+                               placeholder="Contoh: Peralatan IT, Kendaraan, Mesin" required>
+                        @error('nama_kategori') 
+                            <div class="invalid-feedback"><i class="bi bi-exclamation-circle me-1"></i> {{ $message }}</div> 
+                        @enderror
                     </div>
 
-                    <div class="card-body p-4 p-md-5 bg-white">
-                        <form action="{{ route('kategoris.store') }}" method="POST">
-                            @csrf
-                            
-                            <div class="mb-4">
-                                <label class="form-label">Nama Kategori <span class="text-danger">*</span></label>
-                                <input type="text" name="nama_kategori" 
-                                       class="form-control @error('nama_kategori') is-invalid @enderror" 
-                                       value="{{ old('nama_kategori') }}" 
-                                       placeholder="Misal: Peralatan IT / Kendaraan" required>
-                                @error('nama_kategori') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label">Deskripsi Kategori</label>
-                                <textarea name="deskripsi" class="form-control" rows="3" 
-                                          placeholder="Tuliskan keterangan singkat mengenai kategori ini..."></textarea>
-                            </div>
-
-                            <div class="d-flex justify-content-between mt-5 pt-4 border-top">
-                                <a href="{{ route('dashboard') }}" class="btn-cancel">Batal</a>
-                                <button type="submit" class="btn-bps-blue shadow-sm">Simpan Kategori</button>
-                            </div>
-                        </form>
+                    {{-- Deskripsi Kategori --}}
+                    <div class="mb-4">
+                        <label class="form-label">Deskripsi Kategori <span class="text-lowercase" style="font-weight: 400">(Opsional)</span></label>
+                        <textarea name="deskripsi" class="form-control" rows="4" 
+                                  placeholder="Tuliskan keterangan singkat mengenai lingkup kategori ini..."></textarea>
                     </div>
-                </div>
-                <p class="text-center mt-4 text-muted small">© 2026 Badan Pusat Statistik Kota Bontang</p>
+
+                    {{-- Action Buttons --}}
+                    <div class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top d-flex-mobile">
+                        <a href="{{ route('dashboard') }}" class="btn-cancel text-center">
+                            Batal
+                        </a>
+                        <button type="submit" class="btn-bps-blue shadow-sm">
+                            Simpan Data
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
+
+        {{-- ══ FOOTER ══ --}}
+        <p class="footer-text">
+            &copy; {{ date('Y') }} <strong>Badan Pusat Statistik Kota Bontang</strong>
+        </p>
     </div>
+
 </body>
 </html>
