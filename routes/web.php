@@ -24,7 +24,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/api/barangs-by-kategori/{kategoriId}', [BarangController::class, 'getByKategori'])->name('api.barangs.by-kategori');
     
     // Pemeliharaan Routes
-    Route::resource('pemeliharaans', PemeliharaanController::class);
+    Route::resource('pemeliharaans', PemeliharaanController::class)->except(['show']);
     Route::get('pemeliharaans/export/pdf', [PemeliharaanController::class, 'exportPdf'])->name('pemeliharaans.export.pdf');
 });
 

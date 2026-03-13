@@ -17,7 +17,7 @@ class PemeliharaanController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Pemeliharaan::where('user_id', auth()->id())->with('barang.kategori');
+        $query = Pemeliharaan::with('barang.kategori');
 
         // Filter berdasarkan kategori jika ada
         if ($request->filled('kategori_id')) {
@@ -55,7 +55,7 @@ class PemeliharaanController extends Controller
     
     public function create()
     {
-        $kategoris = Kategori::where('user_id', auth()->id())->get();
+        $kategoris = Kategori::all();
         return view('pemeliharaans.create', compact('kategoris'));
     }
     
@@ -78,25 +78,15 @@ class PemeliharaanController extends Controller
         return redirect()->route('pemeliharaans.index', ['barang_id' => $request->barang_id])->with('success', 'Data pemeliharaan berhasil ditambahkan!');
         }
 
-    public function show(Pemeliharaan $pemeliharaan)
-    {
-        if ($pemeliharaan->user_id !== auth()->id()) abort(403);
-        $pemeliharaan->load('barang.kategori');
-        return view('pemeliharaans.show', compact('pemeliharaan'));
-    }
-
     public function edit(Pemeliharaan $pemeliharaan)
     {
-        if ($pemeliharaan->user_id !== auth()->id()) abort(403);
-        $kategoris = Kategori::where('user_id', auth()->id())->get();
+        $kategoris = Kategori::all();
         $pemeliharaan->load('barang');
         return view('pemeliharaans.edit', compact('pemeliharaan', 'kategoris'));
     }
 
     public function update(Request $request, Pemeliharaan $pemeliharaan)
     {
-        if ($pemeliharaan->user_id !== auth()->id()) abort(403);
-
         $validated = $request->validate([
             'tanggal_mulai' => 'nullable|date',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
@@ -114,7 +104,6 @@ class PemeliharaanController extends Controller
 
     public function destroy(Pemeliharaan $pemeliharaan)
     {
-        if ($pemeliharaan->user_id !== auth()->id()) abort(403);
         $barangId = $pemeliharaan->barang_id;
         $pemeliharaan->delete();
         return redirect()->route('pemeliharaans.index', ['barang_id' => $barangId])
@@ -123,7 +112,7 @@ class PemeliharaanController extends Controller
 
     public function exportPdf(Request $request)
     {
-        $query = Pemeliharaan::where('user_id', auth()->id())->with('barang.kategori');
+        $query = Pemeliharaan::with('barang.kategori');
         
         if ($request->filled('barang_id')) {
             $query->where('barang_id', $request->barang_id);

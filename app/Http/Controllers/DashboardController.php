@@ -6,37 +6,25 @@ use App\Models\Kategori;
 use App\Models\Barang;
 use App\Models\Pemeliharaan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $user = Auth::user();
-
         // Total kategori
-        $totalKategori = Kategori::where('user_id', $user->id)->count();
+        $totalKategori = Kategori::count();
 
         // Total barang
-        $totalBarang = Barang::whereHas('kategori', function ($q) use ($user) {
-            $q->where('user_id', $user->id);
-        })->count();
+        $totalBarang = Barang::count();
 
         // Total pemeliharaan
-        $totalPemeliharaan = Pemeliharaan::whereHas('barang.kategori', function ($q) use ($user) {
-            $q->where('user_id', $user->id);
-        })->count();
+        $totalPemeliharaan = Pemeliharaan::count();
 
         // Total biaya: SUM semua kolom biaya (realisasi per transaksi)
-        $totalBiaya = Pemeliharaan::whereHas('barang.kategori', function ($q) use ($user) {
-            $q->where('user_id', $user->id);
-        })->sum('biaya');
+        $totalBiaya = Pemeliharaan::sum('biaya');
 
-        // ID baris terakhir untuk setiap barang milik user ini
-        $lastIds = Pemeliharaan::whereHas('barang.kategori', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            })
-            ->selectRaw('MAX(id) as last_id')
+        // ID baris terakhir untuk setiap barang
+        $lastIds = Pemeliharaan::selectRaw('MAX(id) as last_id')
             ->groupBy('barang_id')
             ->pluck('last_id');
 
@@ -51,13 +39,12 @@ class DashboardController extends Controller
         // Data kategori — dengan filter search
         $search = $request->get('search');
 
-        $kategoris = Kategori::where('user_id', $user->id)
-            ->withCount('barangs')
+        $kategoris = Kategori::withCount('barangs')
             ->when($search, function ($query, $search) {
                 $query->where('nama_kategori', 'like', '%' . $search . '%');
             })
             ->latest()
-            ->get();
+            ->paginate(12);
 
         return view('dashboard', compact(
             'totalKategori',

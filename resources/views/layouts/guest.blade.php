@@ -7,6 +7,9 @@
 
     <title>Masuk — Kartu Kendali BPS Kota Bontang</title>
 
+    <!-- Favicon Logo BPS -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-bps.png') }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -178,7 +181,7 @@
             }
         }
 
-        /* Menyesuaikan style input bawaan Laravel Breeze agar lebih rapi */
+        /* Menyesuaikan style input bawaan Breeze agar lebih rapi */
         input:focus {
             border-color: var(--bps-blue) !important;
             ring-color: var(--bps-blue) !important;

@@ -13,7 +13,7 @@ class BarangController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Barang::where('user_id', auth()->id())->with('kategori');
+        $query = Barang::with('kategori');
 
         if ($request->filled('kategori_id')) {
             $query->where('kategori_id', $request->kategori_id);
@@ -38,8 +38,8 @@ class BarangController extends Controller
      */
     public function create(Request $request)
     {
-        // Mengambil semua kategori milik user untuk dropdown
-        $kategoris = Kategori::where('user_id', auth()->id())->get();
+        // Mengambil semua kategori untuk dropdown
+        $kategoris = Kategori::all();
         
         // Menangkap kategori_id dari parameter URL agar otomatis terpilih di form
         $selectedKategori = $request->query('kategori_id');
@@ -69,30 +69,18 @@ class BarangController extends Controller
 
     public function show(Barang $barang)
     {
-        if ($barang->user_id !== auth()->id()) {
-            abort(403);
-        }
-
         $barang->load('kategori');
         return view('barangs.show', compact('barang'));
     }
 
     public function edit(Barang $barang)
     {
-        if ($barang->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $kategoris = Kategori::where('user_id', auth()->id())->get();
+        $kategoris = Kategori::all();
         return view('barangs.edit', compact('barang', 'kategoris'));
     }
 
     public function update(Request $request, Barang $barang)
     {
-        if ($barang->user_id !== auth()->id()) {
-            abort(403);
-        }
-
         $validated = $request->validate([
             'kategori_id' => 'required|exists:kategoris,id',
             'nup_bmn' => 'required|string|max:255',
@@ -109,10 +97,6 @@ class BarangController extends Controller
 
     public function destroy(Barang $barang)
     {
-        if ($barang->user_id !== auth()->id()) {
-            abort(403);
-        }
-
         $kategori_id = $barang->kategori_id;
         $barang->delete();
 
@@ -126,7 +110,6 @@ class BarangController extends Controller
     public function getByKategori($kategoriId)
     {
         $barangs = Barang::where('kategori_id', $kategoriId)
-                         ->where('user_id', auth()->id())
                          ->select('id', 'nup_bmn', 'nama_barang', 'merk_type', 'lokasi')
                          ->get();
 

@@ -36,19 +36,11 @@ class KategoriController extends Controller
 
     public function edit(Kategori $kategori)
     {
-        if ($kategori->user_id !== auth()->id()) {
-            abort(403);
-        }
-
         return view('kategoris.edit', compact('kategori'));
     }
 
     public function update(Request $request, Kategori $kategori)
     {
-        if ($kategori->user_id !== auth()->id()) {
-            abort(403);
-        }
-
         $validated = $request->validate([
             'nama_kategori' => 'required|string|max:255',
             'deskripsi' => 'nullable|string'
@@ -63,10 +55,6 @@ class KategoriController extends Controller
 
     public function destroy(Kategori $kategori)
     {
-        if ($kategori->user_id !== auth()->id()) {
-            abort(403);
-        }
-
         $kategori->delete();
 
         // SETELAH HAPUS: Kembali ke dashboard karena kategori sudah tidak ada
