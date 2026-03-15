@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Pemeliharaan extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -42,5 +43,15 @@ class Pemeliharaan extends Model
     public function barang()
     {
         return $this->belongsTo(Barang::class);
+    }
+
+    /**
+     * Aksesor untuk menghitung biaya kumulatif secara dinamis.
+     */
+    public function getBiayaKumulatifDinamisAttribute()
+    {
+        return $this->barang->pemeliharaans()
+            ->where('created_at', '<=', $this->created_at)
+            ->sum('biaya');
     }
 }

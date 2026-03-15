@@ -54,10 +54,12 @@
 
     @foreach($groupedData as $barangId => $items)
         @php
-            $barang = $items->first()->barang;
+            // Ambil barang dari items pertama, atau jika empty (kasus filter barang tanpa riwayat) ambil langsung dari model
+            $firstItem = $items->first();
+            $barang = $firstItem ? $firstItem->barang : \App\Models\Barang::find($barangId);
+            
             $totalBiaya = $items->sum('biaya');
             $totalPagu = $barang->pagu_anggaran ?? 0;
-            $biayaKumulatif = 0;
         @endphp
 
         <div class="header">
@@ -91,48 +93,63 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($items as $index => $p)
-                    @php
-                        $biayaKumulatif += $p->biaya;
-                        $sisaAnggaran = $totalPagu - $biayaKumulatif;
-                    @endphp
+                @if($items->isEmpty() || $items->count() == 0)
                     <tr>
-                        <td class="text-center">{{ $loop->iteration }}</td>
-                        <td class="text-center">{{ $p->tanggal_mulai ? $p->tanggal_mulai->format('d/m/Y') : '-' }}</td>
-                        <td class="text-center">{{ $p->tanggal_selesai ? $p->tanggal_selesai->format('d/m/Y') : '-' }}</td>
-                        <td>{{ $p->rincian_pekerjaan }}</td>
-                        <td class="text-right">{{ number_format($p->biaya, 0, ',', '.') }}</td>
-                        <td class="text-right bg-light">{{ number_format($biayaKumulatif, 0, ',', '.') }}</td>
-                        <td class="text-right">{{ number_format($totalPagu, 0, ',', '.') }}</td>
-                        <td class="text-right">{{ number_format($sisaAnggaran, 0, ',', '.') }}</td>
+                        <td colspan="8" class="text-center bg-light" style="font-style: italic; color: #666; padding: 20px;">
+                            Belum ada data pemeliharaan
+                        </td>
                     </tr>
-                @endforeach
+                @else
+                    @foreach($items as $index => $p)
+                        @php
+                            $sisaAnggaran = $totalPagu - $p->biaya_kumulatif_dinamis;
+                        @endphp
+                        <tr>
+                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td class="text-center">{{ $p->tanggal_mulai ? $p->tanggal_mulai->format('d/m/Y') : '-' }}</td>
+                            <td class="text-center">{{ $p->tanggal_selesai ? $p->tanggal_selesai->format('d/m/Y') : '-' }}</td>
+                            <td>{{ $p->rincian_pekerjaan }}</td>
+                            <td class="text-right">{{ number_format($p->biaya, 0, ',', '.') }}</td>
+                            <td class="text-right bg-light">{{ number_format($p->biaya_kumulatif_dinamis, 0, ',', '.') }}</td>
+                            <td class="text-right">{{ number_format($totalPagu, 0, ',', '.') }}</td>
+                            <td class="text-right">{{ number_format($sisaAnggaran, 0, ',', '.') }}</td>
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
 
         <div class="summary-container">
             <table class="summary-table">
-                <tr>
-                    <td style="padding: 5px; font-size: 10px; font-weight: bold;">TOTAL REALISASI PEMELIHARAAN</td>
-                    <td style="padding: 5px; font-size: 10px; font-weight: bold; text-align: right;">
-                        Rp {{ number_format($totalBiaya, 0, ',', '.') }}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px; font-size: 10px; font-weight: bold;">TOTAL PAGU ANGGARAN</td>
-                    <td style="padding: 5px; font-size: 10px; font-weight: bold; text-align: right;">
-                        Rp {{ number_format($totalPagu, 0, ',', '.') }}
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="border-top: 3px double #333; padding: 0;"></td>
-                </tr>
-                <tr>
-                    <td style="padding: 8px 5px; font-size: 11px; font-weight: bold;">SISA ANGGARAN SAAT INI</td>
-                    <td style="padding: 8px 5px; font-size: 11px; font-weight: bold; text-align: right;">
-                        Rp {{ number_format($totalPagu - $totalBiaya, 0, ',', '.') }}
-                    </td>
-                </tr>
+                @if($totalBiaya == 0 && $totalPagu == 0)
+                    <tr>
+                        <td colspan="2" class="text-center" style="padding: 10px; font-style: italic; color: #666; border: 1px dashed #ddd;">
+                            Belum ada realisasi anggaran
+                        </td>
+                    </tr>
+                @else
+                    <tr>
+                        <td style="padding: 5px; font-size: 10px; font-weight: bold;">TOTAL REALISASI PEMELIHARAAN</td>
+                        <td style="padding: 5px; font-size: 10px; font-weight: bold; text-align: right;">
+                            Rp {{ number_format($totalBiaya, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px; font-size: 10px; font-weight: bold;">TOTAL PAGU ANGGARAN</td>
+                        <td style="padding: 5px; font-size: 10px; font-weight: bold; text-align: right;">
+                            Rp {{ number_format($totalPagu, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border-top: 3px double #333; padding: 0;"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 5px; font-size: 11px; font-weight: bold;">SISA ANGGARAN SAAT INI</td>
+                        <td style="padding: 8px 5px; font-size: 11px; font-weight: bold; text-align: right;">
+                            Rp {{ number_format($totalPagu - $totalBiaya, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                @endif
             </table>
         </div>
 

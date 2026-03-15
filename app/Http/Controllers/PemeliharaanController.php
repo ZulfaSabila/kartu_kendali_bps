@@ -71,12 +71,7 @@ class PemeliharaanController extends Controller
         ]);
 
         $barang = Barang::findOrFail($request->barang_id);
-        $validated['pagu'] = $barang->pagu_anggaran;
 
-        // Hitung biaya kumulatif otomatis
-        $previousTotal = Pemeliharaan::where('barang_id', $request->barang_id)->sum('biaya');
-        $validated['biaya_kumulatif'] = $previousTotal + $request->biaya;
-        
         $validated['user_id'] = auth()->id();
         Pemeliharaan::create($validated);
 
@@ -150,8 +145,16 @@ class PemeliharaanController extends Controller
             $query->where('barang_id', $request->barang_id);
         }
 
-        $pemeliharaans = $query->orderBy('tanggal_mulai', 'asc')->get();
+        $pemeliharaans = $query->orderBy('tanggal_mulai', 'asc')->lazy();
         $groupedData = $pemeliharaans->groupBy('barang_id');
+
+        // REQUIRED FIX: Jika barang_id ada tapi datanya kosong, tambahkan barang tersebut dengan collection kosong
+        if ($request->filled('barang_id') && $groupedData->isEmpty()) {
+            $barang = Barang::find($request->barang_id);
+            if ($barang && $groupedData->isEmpty()) {
+                $groupedData = collect([$barang->id => collect([])]);
+            }
+        }
 
         $pdf = Pdf::loadView('pemeliharaans.pdf', compact('groupedData'))->setPaper('a4', 'landscape');
         return $pdf->download('kartu-kendali-' . date('Y-m-d') . '.pdf');

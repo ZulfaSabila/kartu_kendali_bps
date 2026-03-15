@@ -4,18 +4,24 @@ namespace App\Exports;
 
 use App\Models\Pemeliharaan;
 use App\Models\Barang;
-use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
-class PemeliharaanExport implements FromView, ShouldAutoSize, WithStyles, WithColumnFormatting
+class PemeliharaanExport implements FromQuery, ShouldAutoSize, WithStyles, WithColumnFormatting, WithHeadings, WithMapping, WithEvents
 {
     protected $barangId;
     protected $search;
+    protected $rowNumber = 0;
 
     public function __construct($barangId = null, $search = null)
     {
@@ -23,9 +29,9 @@ class PemeliharaanExport implements FromView, ShouldAutoSize, WithStyles, WithCo
         $this->search = $search;
     }
 
-    public function view(): View
+    public function query()
     {
-        $query = Pemeliharaan::query();
+        $query = Pemeliharaan::with('barang');
 
         if ($this->barangId) {
             $query->where('barang_id', $this->barangId);
@@ -35,17 +41,35 @@ class PemeliharaanExport implements FromView, ShouldAutoSize, WithStyles, WithCo
             $query->where('rincian_pekerjaan', 'like', '%' . $this->search . '%');
         }
 
-        $pemeliharaans = $query->orderBy('tanggal_mulai', 'asc')->get();
-        
-        // Jika barangId tidak ada di request, coba ambil dari record pertama
-        $barang = null;
-        if ($this->barangId) {
-            $barang = Barang::find($this->barangId);
-        } elseif ($pemeliharaans->count() > 0) {
-            $barang = $pemeliharaans->first()->barang;
-        }
+        return $query->orderBy('tanggal_mulai', 'asc');
+    }
 
-        return view('exports.pemeliharaan', compact('pemeliharaans', 'barang'));
+    public function headings(): array
+    {
+        return [
+            ['KARTU KENDALI PEMELIHARAAN BARANG MILIK NEGARA'],
+            ['BPS Kota Bontang'],
+            [''],
+            ['No', 'Tanggal Mulai', 'Tanggal Selesai', 'Rincian Pekerjaan', 'Biaya (Rp)', 'Biaya Kumulatif (Rp)', 'Pagu (Rp)', 'Sisa Anggaran (Rp)']
+        ];
+    }
+
+    public function map($p): array
+    {
+        $this->rowNumber++;
+        $pagu_anggaran = $p->barang->pagu_anggaran ?? $p->pagu;
+        $sisaAnggaran = $pagu_anggaran - $p->biaya_kumulatif_dinamis;
+
+        return [
+            $this->rowNumber,
+            $p->tanggal_mulai ? $p->tanggal_mulai->format('d/m/Y') : '-',
+            $p->tanggal_selesai ? $p->tanggal_selesai->format('d/m/Y') : '-',
+            $p->rincian_pekerjaan,
+            (float)$p->biaya,
+            (float)$p->biaya_kumulatif_dinamis,
+            (float)$pagu_anggaran,
+            (float)$sisaAnggaran,
+        ];
     }
 
     public function columnFormats(): array
@@ -60,9 +84,30 @@ class PemeliharaanExport implements FromView, ShouldAutoSize, WithStyles, WithCo
 
     public function styles(Worksheet $sheet)
     {
+        $sheet->mergeCells('A1:H1');
+        $sheet->mergeCells('A2:H2');
+        
         return [
-            // No specific style needed as View handles it, 
-            // but we can add more if necessary here.
+            1 => ['font' => ['bold' => true, 'size' => 14], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]],
+            2 => ['font' => ['bold' => true, 'size' => 12], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]],
+            4 => ['font' => ['bold' => true], 'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['rgb' => 'F2F2F2']]],
+        ];
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function(AfterSheet $event) {
+                $lastRow = $event->sheet->getHighestRow();
+                $event->sheet->getStyle('A4:H' . $lastRow)->applyFromArray([
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['rgb' => '000000'],
+                        ],
+                    ],
+                ]);
+            },
         ];
     }
 }

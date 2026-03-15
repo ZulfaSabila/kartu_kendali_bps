@@ -174,8 +174,8 @@
                 <tbody>
                     @forelse($pemeliharaans as $index => $item)
                     @php
-                        $pagu_anggaran = $item->barang->pagu_anggaran ?? $item->pagu;
-                        $sisaAnggaran = $pagu_anggaran - $item->biaya_kumulatif;
+                        $pagu_anggaran = $item->barang->pagu_anggaran;
+                        $sisaAnggaran = $pagu_anggaran - $item->biaya_kumulatif_dinamis;
                     @endphp
                     <tr>
                         <td class="text-center text-muted fw-bold">{{ $pemeliharaans->firstItem() + $index }}</td>
@@ -195,7 +195,7 @@
                         <td class="text-end text-muted">
                             <div class="currency-cell">
                                 <span class="currency-symbol">Rp</span>
-                                <span class="currency-value">{{ number_format($item->biaya_kumulatif, 0, ',', '.') }}</span>
+                                <span class="currency-value">{{ number_format($item->biaya_kumulatif_dinamis, 0, ',', '.') }}</span>
                             </div>
                         </td>
                         <td class="text-end text-muted">

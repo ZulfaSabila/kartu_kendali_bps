@@ -55,10 +55,17 @@ class KategoriController extends Controller
 
     public function destroy(Kategori $kategori)
     {
-        $kategori->delete();
+        try {
+            $kategori->delete();
 
-        // SETELAH HAPUS: Kembali ke dashboard karena kategori sudah tidak ada
-        return redirect()->route('dashboard')
-                        ->with('success', 'Data Kategori dan seluruh aset di dalamnya berhasil dihapus!');
+            // SETELAH HAPUS: Kembali ke dashboard karena kategori sudah tidak ada
+            return redirect()->route('dashboard')
+                            ->with('success', 'Data Kategori berhasil dihapus!');
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == "23000") {
+                return back()->with('error', 'Kategori tidak dapat dihapus karena masih memiliki data barang.');
+            }
+            throw $e;
+        }
     }
 }
