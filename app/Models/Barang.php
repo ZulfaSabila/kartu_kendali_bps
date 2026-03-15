@@ -16,6 +16,7 @@ class Barang extends Model
         'nama_barang',
         'merk_type',
         'lokasi',
+        'pagu_anggaran',
     ];
 
     // Relasi ke User

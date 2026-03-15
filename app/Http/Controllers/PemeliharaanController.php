@@ -68,15 +68,20 @@ class PemeliharaanController extends Controller
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'rincian_pekerjaan' => 'nullable|string',
             'biaya' => 'required|numeric|min:0',
-            'pagu' => 'required|numeric|min:0',
-            'biaya_kumulatif' => 'required|numeric|min:0'
         ]);
 
+        $barang = Barang::findOrFail($request->barang_id);
+        $validated['pagu'] = $barang->pagu_anggaran;
+
+        // Hitung biaya kumulatif otomatis
+        $previousTotal = Pemeliharaan::where('barang_id', $request->barang_id)->sum('biaya');
+        $validated['biaya_kumulatif'] = $previousTotal + $request->biaya;
+        
         $validated['user_id'] = auth()->id();
         Pemeliharaan::create($validated);
 
         return redirect()->route('pemeliharaans.index', ['barang_id' => $request->barang_id])->with('success', 'Data pemeliharaan berhasil ditambahkan!');
-        }
+    }
 
     public function edit(Pemeliharaan $pemeliharaan)
     {
@@ -91,15 +96,42 @@ class PemeliharaanController extends Controller
             'tanggal_mulai' => 'nullable|date',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'rincian_pekerjaan' => 'nullable|string',
-            'pagu' => 'required|numeric|min:0',
             'biaya' => 'required|numeric|min:0',
-            'biaya_kumulatif' => 'required|numeric|min:0'
         ]);
+
+        $validated['pagu'] = $pemeliharaan->barang->pagu_anggaran;
+
+        // Hitung ulang biaya kumulatif otomatis saat update
+        $previousTotal = Pemeliharaan::where('barang_id', $pemeliharaan->barang_id)
+            ->where('id', '<', $pemeliharaan->id)
+            ->sum('biaya');
+        $validated['biaya_kumulatif'] = $previousTotal + $request->biaya;
 
         $pemeliharaan->update($validated);
 
+        // Opsi tambahan: Jika biaya di record tengah diubah, idealnya biaya_kumulatif record setelahnya juga harus diupdate.
+        // Namun sesuai instruksi dasar, kita fokus pada store dan update record saat ini.
+        $this->recalculateCumulativeCosts($pemeliharaan->barang_id);
+
         return redirect()->route('pemeliharaans.index', ['barang_id' => $pemeliharaan->barang_id])
                         ->with('success', 'Data pemeliharaan berhasil diperbarui!');
+    }
+
+    /**
+     * Sinkronisasi ulang biaya kumulatif untuk satu barang jika ada perubahan di tengah data.
+     */
+    private function recalculateCumulativeCosts($barangId)
+    {
+        $records = Pemeliharaan::where('barang_id', $barangId)
+            ->orderBy('tanggal_mulai', 'asc')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        $runningTotal = 0;
+        foreach ($records as $record) {
+            $runningTotal += $record->biaya;
+            $record->update(['biaya_kumulatif' => $runningTotal]);
+        }
     }
 
     public function destroy(Pemeliharaan $pemeliharaan)
@@ -124,4 +156,12 @@ class PemeliharaanController extends Controller
         $pdf = Pdf::loadView('pemeliharaans.pdf', compact('groupedData'))->setPaper('a4', 'landscape');
         return $pdf->download('kartu-kendali-' . date('Y-m-d') . '.pdf');
     }
-            }
+
+    public function exportExcel(Request $request)
+    {
+        $barangId = $request->barang_id;
+        $search = $request->search;
+
+        return Excel::download(new PemeliharaanExport($barangId, $search), 'riwayat-pemeliharaan-' . date('Y-m-d') . '.xlsx');
+    }
+}

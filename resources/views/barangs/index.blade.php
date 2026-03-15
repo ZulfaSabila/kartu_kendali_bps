@@ -198,6 +198,11 @@
                         <span class="detail-label">Intensitas</span>
                         <span class="detail-value">{{ $barang->pemeliharaans_count ?? 0 }} Riwayat</span>
                     </div>
+                    <div class="detail-item">
+                        <i class="bi bi-cash-stack"></i>
+                        <span class="detail-label">Pagu</span>
+                        <span class="detail-value text-primary">Rp {{ number_format($barang->pagu_anggaran, 0, ',', '.') }}</span>
+                    </div>
                 </div>
 
                 <hr class="asset-divider">

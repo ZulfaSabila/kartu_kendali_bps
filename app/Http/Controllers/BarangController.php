@@ -58,6 +58,7 @@ class BarangController extends Controller
             'nama_barang' => 'required|string|max:255',
             'merk_type' => 'nullable|string|max:255',
             'lokasi' => 'nullable|string|max:255',
+            'pagu_anggaran' => 'required|numeric|min:0',
         ]);
 
         $validated['user_id'] = auth()->id();
@@ -87,6 +88,7 @@ class BarangController extends Controller
             'nama_barang' => 'required|string|max:255',
             'merk_type' => 'nullable|string|max:255',
             'lokasi' => 'nullable|string|max:255',
+            'pagu_anggaran' => 'required|numeric|min:0',
         ]);
 
         $barang->update($validated);

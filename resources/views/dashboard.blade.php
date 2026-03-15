@@ -14,54 +14,70 @@
 
     <!-- Statistics Cards -->
     <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card-bps p-3 h-100">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-primary bg-opacity-10 p-2 text-primary">
-                        <i class="bi bi-folder2 fs-5"></i>
-                    </div>
-                    <div>
-                        <div class="text-muted small fw-bold uppercase" style="font-size: 0.65rem;">Total Kategori</div>
-                        <div class="h5 fw-bold mb-0">{{ $totalKategori }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card-bps p-3 h-100">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-success bg-opacity-10 p-2 text-success">
-                        <i class="bi bi-box-seam fs-5"></i>
-                    </div>
-                    <div>
-                        <div class="text-muted small fw-bold uppercase" style="font-size: 0.65rem;">Total Barang</div>
-                        <div class="h5 fw-bold mb-0">{{ $totalBarang }}</div>
+        <!-- Card 1: Total Kategori -->
+        <div class="col-md-4">
+            <div class="card card-bps shadow-sm rounded h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 text-primary">
+                            <i class="bi bi-grid-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Total Kategori</div>
+                            <div class="h3 fw-bold mb-0 text-dark">{{ $totalKategori }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card-bps p-3 h-100">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-warning bg-opacity-10 p-2 text-warning">
-                        <i class="bi bi-tools fs-5"></i>
-                    </div>
-                    <div>
-                        <div class="text-muted small fw-bold uppercase" style="font-size: 0.65rem;">Pemeliharaan</div>
-                        <div class="h5 fw-bold mb-0">{{ $totalPemeliharaan }}</div>
+
+        <!-- Card 2: Kategori Terbanyak Item -->
+        <div class="col-md-4">
+            <div class="card card-bps shadow-sm rounded h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-success bg-opacity-10 p-3 text-success">
+                            <i class="bi bi-stars fs-4"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Kategori Terbanyak Item</div>
+                            @php
+                                $kategoriTerbanyak = $kategoris->sortByDesc('barangs_count')->first();
+                            @endphp
+                            @if($kategoriTerbanyak)
+                                <div class="h5 fw-bold mb-0 text-dark text-truncate" style="max-width: 180px;">{{ $kategoriTerbanyak->nama_kategori }}</div>
+                                <div class="small text-muted">{{ $kategoriTerbanyak->barangs_count ?? 0 }} item</div>
+                            @else
+                                <div class="h5 fw-bold mb-0 text-muted">-</div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card-bps p-3 h-100">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-info bg-opacity-10 p-2 text-info">
-                        <i class="bi bi-wallet2 fs-5"></i>
+
+        <!-- Card 3: Kategori Terisi -->
+        <div class="col-md-4">
+            <div class="card card-bps shadow-sm rounded h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <div class="rounded-circle bg-info bg-opacity-10 p-3 text-info">
+                            <i class="bi bi-pie-chart-fill fs-4"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Kategori Terisi</div>
+                            @php
+                                $kategoriTerisiCount = $kategoris->where('barangs_count', '>', 0)->count();
+                                $persentaseTerisi = $totalKategori > 0 ? round(($kategoriTerisiCount / $totalKategori) * 100) : 0;
+                            @endphp
+                            <div class="h3 fw-bold mb-0 text-dark">{{ $persentaseTerisi }}%</div>
+                        </div>
                     </div>
-                    <div>
-                        <div class="text-muted small fw-bold uppercase" style="font-size: 0.65rem;">Sisa Anggaran</div>
-                        <div class="h5 fw-bold mb-0">Rp {{ number_format($sisaAnggaran, 0, ',', '.') }}</div>
+                    <div class="progress" style="height: 6px;">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ $persentaseTerisi }}%" aria-valuenow="{{ $persentaseTerisi }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="small text-muted mt-2" style="font-size: 0.75rem;">
+                        {{ $kategoriTerisiCount }} dari {{ $totalKategori }} kategori
                     </div>
                 </div>
             </div>

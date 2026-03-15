@@ -90,6 +90,9 @@
                 <a href="{{ route('pemeliharaans.create', ['barang_id' => request('barang_id')]) }}" class="btn-bps btn-bps-primary">
                     <i class="bi bi-plus-lg"></i> Tambah Data
                 </a>
+                <a href="{{ route('pemeliharaans.export.excel', ['barang_id' => request('barang_id'), 'search' => request('search')]) }}" class="btn-bps btn-bps-outline" style="color: #1d6f42; border-color: #1d6f42;">
+                    <i class="bi bi-file-earmark-excel"></i> Excel
+                </a>
                 <a href="{{ route('pemeliharaans.export.pdf', ['barang_id' => request('barang_id')]) }}" class="btn-bps btn-bps-outline">
                     Cetak PDF
                 </a>
@@ -171,7 +174,8 @@
                 <tbody>
                     @forelse($pemeliharaans as $index => $item)
                     @php
-                        $sisaAnggaran = $item->pagu - $item->biaya_kumulatif;
+                        $pagu_anggaran = $item->barang->pagu_anggaran ?? $item->pagu;
+                        $sisaAnggaran = $pagu_anggaran - $item->biaya_kumulatif;
                     @endphp
                     <tr>
                         <td class="text-center text-muted fw-bold">{{ $pemeliharaans->firstItem() + $index }}</td>
@@ -197,7 +201,7 @@
                         <td class="text-end text-muted">
                             <div class="currency-cell">
                                 <span class="currency-symbol">Rp</span>
-                                <span class="currency-value">{{ number_format($item->pagu, 0, ',', '.') }}</span>
+                                <span class="currency-value">{{ number_format($pagu_anggaran, 0, ',', '.') }}</span>
                             </div>
                         </td>
                         <td class="text-end">
