@@ -4,14 +4,14 @@
             <div class="col-md-6">
                 <nav aria-label="breadcrumb" class="mb-1">
                     <ol class="breadcrumb mb-0" style="font-size: 0.75rem;">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Kelola Kategori</li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none" style="color: #6b7280;">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" style="color: #003366;">Kelola Kategori</li>
                     </ol>
                 </nav>
-                <h1 class="page-title">Daftar Kategori BMN</h1>
+                <h1 class="page-title" style="color: #003366;">Daftar Kategori BMN</h1>
             </div>
             <div class="col-md-6 text-md-end mt-2 mt-md-0">
-                <a href="{{ route('dashboard') }}" class="btn-bps btn-bps-outline">
+                <a href="{{ route('dashboard') }}" class="btn-bps btn-bps-outline" style="color: #003366; border-color: #003366;">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>
             </div>

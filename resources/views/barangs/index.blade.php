@@ -7,87 +7,94 @@
                 border-radius: 12px;
                 padding: 20px;
                 transition: all 0.3s ease;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
                 height: 100%;
                 display: flex;
                 flex-direction: column;
             }
             .asset-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+                transform: translateY(-4px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             }
             .asset-header {
                 display: flex;
-                align-items: flex-start;
+                align-items: center;
                 gap: 16px;
-                margin-bottom: 15px;
+                margin-bottom: 16px;
             }
             .asset-icon {
-                width: 54px;
-                height: 54px;
+                width: 40px;
+                height: 40px;
                 background-color: #f0f7ff;
-                border-radius: 10px;
+                border-radius: 8px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 color: #003366;
-                font-size: 1.5rem;
+                font-size: 1.25rem;
                 flex-shrink: 0;
             }
             .asset-title-area {
                 flex-grow: 1;
+                min-width: 0;
             }
             .asset-name {
-                font-size: 1rem;
-                font-weight: 800;
+                font-size: 16px;
+                font-weight: 700;
                 color: #1e293b;
-                margin-bottom: 4px;
+                margin-bottom: 2px;
                 text-transform: uppercase;
                 line-height: 1.2;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .badge-nup {
                 background-color: #e0e7ff;
                 color: #4338ca;
-                font-size: 0.7rem;
-                font-weight: 700;
-                padding: 2px 10px;
-                border-radius: 50px;
+                font-size: 12px;
+                font-weight: 600;
+                padding: 2px 8px;
+                border-radius: 4px;
                 display: inline-block;
             }
             .asset-details {
-                margin-bottom: 15px;
+                margin-bottom: 0;
                 flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
             }
-            .detail-item {
+            .detail-row {
                 display: flex;
                 align-items: center;
-                gap: 8px;
-                margin-bottom: 6px;
-                font-size: 0.8rem;
-                color: #64748b;
-            }
-            .detail-item i {
-                font-size: 0.9rem;
-                width: 16px;
-                color: #94a3b8;
+                height: 28px;
             }
             .detail-label {
-                min-width: 80px;
+                width: 90px;
+                font-size: 12px;
+                color: #64748b;
+                flex-shrink: 0;
             }
             .detail-value {
-                font-weight: 700;
-                color: #334155;
+                font-size: 13px;
+                font-weight: 600;
+                color: #1e293b;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .asset-divider {
                 border: 0;
-                border-top: 1px solid #f1f5f9;
-                margin: 15px 0;
+                border-top: 1px solid #e2e8f0;
+                margin: 16px 0 0 0;
+                padding-top: 12px;
             }
             .asset-actions {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                gap: 10px;
+                gap: 12px;
             }
             .btn-manage-history {
                 background-color: #003366;
@@ -95,8 +102,8 @@
                 border: none;
                 border-radius: 8px;
                 padding: 8px 16px;
-                font-size: 0.8rem;
-                font-weight: 700;
+                font-size: 0.875rem;
+                font-weight: 600;
                 display: flex;
                 align-items: center;
                 gap: 8px;
@@ -112,7 +119,7 @@
                 height: 36px;
                 border-radius: 50%;
                 background-color: #f8fafc;
-                border: none;
+                border: 1px solid #e2e8f0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -128,38 +135,43 @@
             <div class="col-md-6">
                 <nav aria-label="breadcrumb" class="mb-1">
                     <ol class="breadcrumb mb-0" style="font-size: 0.75rem;">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Inventaris Barang</li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none" style="color: #6b7280;">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" style="color: #003366;">Inventaris Barang</li>
                     </ol>
                 </nav>
-                <h1 class="page-title">Inventaris Barang</h1>
+                <h1 class="page-title" style="color: #003366;">Inventaris Barang</h1>
             </div>
             <div class="col-md-6 text-md-end mt-2 mt-md-0">
-                <a href="{{ route('barangs.create', ['kategori_id' => request('kategori_id')]) }}" class="btn-bps btn-bps-primary">
+                @if(auth()->user()->isAdmin())
+                <a href="{{ route('barangs.create', ['kategori_id' => request('kategori_id')]) }}" class="btn-bps btn-bps-primary px-4 py-2">
                     <i class="bi bi-plus-lg"></i> Tambah Barang
                 </a>
+                @endif
             </div>
         </div>
     </x-slot>
 
     <!-- Search Section -->
-    <div class="card-bps p-3 mb-3">
+    <div class="card-bps p-2 mb-2 mt-2">
         <form action="{{ route('barangs.index') }}" method="GET">
             @if(request('kategori_id'))
                 <input type="hidden" name="kategori_id" value="{{ request('kategori_id') }}">
             @endif
-            <div class="input-group input-group-sm">
-                <span class="input-group-text bg-transparent border-end-0 text-muted">
+            <div class="input-group" style="height: 40px;">
+                <span class="input-group-text bg-transparent border-0 text-muted ps-3">
                     <i class="bi bi-search"></i>
                 </span>
                 <input type="text" name="search" value="{{ request('search') }}"
-                       class="form-control border-start-0 ps-0 shadow-none"
+                       class="form-control border-0 shadow-none"
+                       style="font-style: italic;"
                        placeholder="Cari berdasarkan NUP, Nama Barang, atau Merk...">
-                <button type="submit" class="btn-bps btn-bps-primary px-3">
+                <button type="submit" class="btn-bps btn-bps-primary px-4" style="border-radius: 8px !important; height: 40px;">
                     Cari
                 </button>
                 @if(request()->filled('search'))
-                    <a href="{{ route('barangs.index', ['kategori_id' => request('kategori_id')]) }}" class="btn btn-outline-secondary d-flex align-items-center px-2 ms-2 rounded-2">
+                    <a href="{{ route('barangs.index', ['kategori_id' => request('kategori_id')]) }}" 
+                       class="btn-bps btn-bps-outline d-flex align-items-center justify-content-center ms-2" 
+                       style="border-radius: 8px !important; width: 40px; height: 40px; padding: 0;">
                         <i class="bi bi-x-lg"></i>
                     </a>
                 @endif
@@ -183,35 +195,32 @@
                 </div>
 
                 <div class="asset-details">
-                    <div class="detail-item">
-                        <i class="bi bi-tag"></i>
+                    <div class="detail-row">
                         <span class="detail-label">Merk/Type</span>
                         <span class="detail-value">{{ $barang->merk_type ?? '-' }}</span>
                     </div>
-                    <div class="detail-item">
-                        <i class="bi bi-geo-alt"></i>
+                    <div class="detail-row">
                         <span class="detail-label">Lokasi</span>
                         <span class="detail-value">{{ $barang->lokasi ?? 'Bontang' }}</span>
                     </div>
-                    <div class="detail-item">
-                        <i class="bi bi-clock-history"></i>
+                    <div class="detail-row">
                         <span class="detail-label">Intensitas</span>
                         <span class="detail-value">{{ $barang->pemeliharaans_count ?? 0 }} Riwayat</span>
                     </div>
-                    <div class="detail-item">
-                        <i class="bi bi-cash-stack"></i>
+                    <div class="detail-row">
                         <span class="detail-label">Pagu</span>
                         <span class="detail-value text-primary">Rp {{ number_format($barang->pagu_anggaran, 0, ',', '.') }}</span>
                     </div>
                 </div>
 
-                <hr class="asset-divider">
+                <div class="asset-divider"></div>
 
                 <div class="asset-actions">
-                    <a href="{{ route('pemeliharaans.index', ['barang_id' => $barang->id]) }}" class="btn-manage-history">
+                    <a href="{{ route('pemeliharaans.index', ['barang_id' => $barang->id]) }}" class="btn-bps btn-bps-primary px-4 py-2">
                         <i class="bi bi-bar-chart-line"></i> Kelola Riwayat
                     </a>
                     
+                    @if(auth()->user()->isAdmin())
                     <div class="dropdown">
                         <button class="btn-more" data-bs-toggle="dropdown">
                             <i class="bi bi-three-dots-vertical"></i>
@@ -234,6 +243,7 @@
                             </li>
                         </ul>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

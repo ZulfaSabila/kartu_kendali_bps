@@ -61,9 +61,9 @@
 
         .page-header {
             background: var(--white);
-            padding: 1.5rem 0;
+            padding: 1rem 0;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
         }
 
         .page-title {
@@ -132,22 +132,36 @@
             border: 1px solid var(--border-color);
         }
 
+        .table-bps {
+            border: 1px solid var(--border-color);
+            border-collapse: collapse;
+        }
+
         .table-bps thead th {
             background-color: #f1f5f9;
-            color: var(--text-muted);
-            font-size: 0.7rem;
+            color: #003366;
+            font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--border-color);
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            text-align: center;
         }
 
         .table-bps tbody td {
-            padding: 0.75rem 1rem;
+            padding: 10px 12px;
             vertical-align: middle;
             font-size: 0.8rem;
-            border-bottom: 1px solid #f8fafc;
+            border: 1px solid var(--border-color);
+        }
+
+        .table-bps tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .table-bps tbody tr:nth-child(odd) {
+            background-color: #ffffff;
         }
 
         /* ── Forms ── */
@@ -216,7 +230,7 @@
 
     <!-- Page Content -->
     <main>
-        <div class="container mt-4">
+        <div class="container mt-3">
             {{ $slot }}
         </div>
     </main>

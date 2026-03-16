@@ -14,8 +14,8 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="fw-bold mb-0 text-primary">Informasi Kategori</h6>
-                        <a href="{{ route('kategoris.index') }}" class="btn btn-sm btn-outline-secondary">
+                        <h6 class="fw-bold mb-0" style="color: #003366;">Informasi Kategori</h6>
+                        <a href="{{ route('kategoris.index') }}" class="btn-bps btn-bps-outline px-3 py-1">
                             <i class="bi bi-arrow-left"></i> Kembali
                         </a>
                     </div>
@@ -25,7 +25,7 @@
                         @csrf
 
                         <div class="mb-3">
-                            <label class="form-label small fw-bold">Nama Kategori</label>
+                            <label class="form-label small fw-bold" style="color: #003366;">Nama Kategori</label>
                             <input type="text" name="nama_kategori" 
                                    class="form-control @error('nama_kategori') is-invalid @enderror" 
                                    value="{{ old('nama_kategori') }}" 
@@ -36,16 +36,16 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label small fw-bold">Deskripsi Kategori <span class="text-muted fw-normal">(Opsional)</span></label>
+                            <label class="form-label small fw-bold" style="color: #003366;">Deskripsi Kategori <span class="text-muted fw-normal">(Opsional)</span></label>
                             <textarea name="deskripsi" class="form-control" rows="3" 
                                       placeholder="Tuliskan keterangan singkat mengenai lingkup kategori ini">{{ old('deskripsi') }}</textarea>
                         </div>
 
                         <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-                            <a href="{{ route('kategoris.index') }}" class="btn btn-outline-secondary px-3">
+                            <a href="{{ route('kategoris.index') }}" class="btn-bps btn-bps-outline px-4 py-2">
                                 Batal
                             </a>
-                            <button type="submit" class="btn btn-primary px-4">
+                            <button type="submit" class="btn-bps btn-bps-primary px-4 py-2">
                                 <i class="bi bi-check-lg"></i> Simpan
                             </button>
                         </div>

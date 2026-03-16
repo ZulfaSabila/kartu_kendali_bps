@@ -11,30 +11,12 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // Total kategori
+        // Statistics for cards
         $totalKategori = Kategori::count();
-
-        // Total barang
-        $totalBarang = Barang::count();
-
-        // Total pemeliharaan
-        $totalPemeliharaan = Pemeliharaan::count();
-
-        // Total biaya: SUM semua kolom biaya (realisasi per transaksi)
-        $totalBiaya = Pemeliharaan::sum('biaya');
-
-        // ID baris terakhir untuk setiap barang
-        $lastIds = Pemeliharaan::selectRaw('MAX(id) as last_id')
-            ->groupBy('barang_id')
-            ->pluck('last_id');
-
-        // Total pagu: satu nilai pagu per barang (dari baris terakhirnya)
-        $totalPagu = Pemeliharaan::whereIn('id', $lastIds)->sum('pagu');
-
-        // Sisa anggaran: pagu dikurangi biaya_kumulatif terakhir per barang
-        $totalBiayaKumulatif = Pemeliharaan::whereIn('id', $lastIds)->sum('biaya_kumulatif');
-
-        $sisaAnggaran = $totalPagu - $totalBiayaKumulatif;
+        $kategoriFilled = Kategori::has('barangs')->count();
+        $kategoriTerbanyak = Kategori::withCount('barangs')
+            ->orderBy('barangs_count', 'desc')
+            ->first();
 
         // Data kategori — dengan filter search
         $search = $request->get('search');
@@ -48,11 +30,8 @@ class DashboardController extends Controller
 
         return view('dashboard', compact(
             'totalKategori',
-            'totalBarang',
-            'totalPemeliharaan',
-            'totalBiaya',
-            'totalPagu',
-            'sisaAnggaran',
+            'kategoriFilled',
+            'kategoriTerbanyak',
             'kategoris'
         ));
     }

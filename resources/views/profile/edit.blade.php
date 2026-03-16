@@ -124,7 +124,8 @@
             </div>
         </div>
 
-        <!-- Delete Account -->
+        <!-- Delete Account (Admin Only) -->
+        @if(auth()->user()->isAdmin())
         <div class="col-12 mt-3">
             <div class="card-bps border-danger border-opacity-25">
                 <div class="bg-danger bg-opacity-10 p-3 border-bottom border-danger border-opacity-25">
@@ -142,8 +143,10 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 
+    @if(auth()->user()->isAdmin())
     <!-- Modal Konfirmasi Hapus Akun -->
     <div class="modal fade" id="deleteAccountModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -170,7 +173,7 @@
                         </div>
                     </div>
                     <div class="modal-footer bg-light border-0 p-4">
-                        <button type="button" class="btn-bps btn-bps-outline px-4" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">Batal</button>
+                        <button type="button" class="btn-bps btn-bps-outline px-4" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn-bps btn-bps-primary px-4" style="background-color: #dc3545; border-color: #dc3545;">
                             Hapus Akun Sekarang
                         </button>
@@ -179,8 +182,9 @@
             </div>
         </div>
     </div>
+    @endif
 
-    @if($errors->userDeletion->isNotEmpty())
+    @if(auth()->user()->isAdmin() && $errors->userDeletion->isNotEmpty())
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             new bootstrap.Modal(document.getElementById('deleteAccountModal')).show();

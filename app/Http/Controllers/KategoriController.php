@@ -34,6 +34,12 @@ class KategoriController extends Controller
                         ->with('success', 'Data Kategori berhasil ditambahkan!');
     }
 
+    public function show(Kategori $kategori)
+    {
+        // Untuk kategori, kita arahkan saja ke daftar barang dalam kategori tersebut
+        return redirect()->route('barangs.index', ['kategori_id' => $kategori->id]);
+    }
+
     public function edit(Kategori $kategori)
     {
         return view('kategoris.edit', compact('kategori'));

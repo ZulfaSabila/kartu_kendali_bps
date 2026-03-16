@@ -2,30 +2,35 @@
     <x-slot name="header">
         <div class="row align-items-center">
             <div class="col-md-6">
+                <nav aria-label="breadcrumb" class="mb-1">
+                    <ol class="breadcrumb mb-0" style="font-size: 0.75rem;">
+                        <li class="breadcrumb-item active" aria-current="page" style="color: #003366;">Dashboard</li>
+                    </ol>
+                </nav>
                 <h1 class="page-title">Dashboard Kategori</h1>
             </div>
-            <div class="col-md-6 text-md-end mt-2 mt-md-0">
+            <div class="col-md-6 text-md-end mt-2 mt-md-0 d-flex justify-content-md-end gap-2">
+                @if(auth()->user()->isAdmin())
                 <a href="{{ route('kategoris.create') }}" class="btn-bps btn-bps-primary">
                     <i class="bi bi-plus-lg"></i> Tambah Kategori
                 </a>
+                @endif
             </div>
         </div>
     </x-slot>
 
     <!-- Statistics Cards -->
-    <div class="row g-3 mb-4">
+    <div class="row g-3 mt-1">
         <!-- Card 1: Total Kategori -->
         <div class="col-md-4">
-            <div class="card card-bps shadow-sm rounded h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 text-primary">
-                            <i class="bi bi-grid-fill fs-4"></i>
-                        </div>
-                        <div>
-                            <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Total Kategori</div>
-                            <div class="h3 fw-bold mb-0 text-dark">{{ $totalKategori }}</div>
-                        </div>
+            <div class="card-bps p-3 h-100">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-2 text-primary">
+                        <i class="bi bi-grid-fill fs-5"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Total Kategori</div>
+                        <div class="h5 fw-bold mb-0 text-dark">{{ $totalKategori }}</div>
                     </div>
                 </div>
             </div>
@@ -33,24 +38,19 @@
 
         <!-- Card 2: Kategori Terbanyak Item -->
         <div class="col-md-4">
-            <div class="card card-bps shadow-sm rounded h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-circle bg-success bg-opacity-10 p-3 text-success">
-                            <i class="bi bi-stars fs-4"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Kategori Terbanyak Item</div>
-                            @php
-                                $kategoriTerbanyak = $kategoris->sortByDesc('barangs_count')->first();
-                            @endphp
-                            @if($kategoriTerbanyak)
-                                <div class="h5 fw-bold mb-0 text-dark text-truncate" style="max-width: 180px;">{{ $kategoriTerbanyak->nama_kategori }}</div>
-                                <div class="small text-muted">{{ $kategoriTerbanyak->barangs_count ?? 0 }} item</div>
-                            @else
-                                <div class="h5 fw-bold mb-0 text-muted">-</div>
-                            @endif
-                        </div>
+            <div class="card-bps p-3 h-100">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-success bg-opacity-10 p-2 text-success">
+                        <i class="bi bi-stars fs-5"></i>
+                    </div>
+                    <div class="flex-grow-1 overflow-hidden">
+                        <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Kategori Terbanyak</div>
+                        @if($kategoriTerbanyak)
+                            <div class="h6 fw-bold mb-0 text-dark text-truncate">{{ $kategoriTerbanyak->nama_kategori }}</div>
+                            <div class="small text-muted" style="font-size: 0.7rem;">{{ $kategoriTerbanyak->barangs_count ?? 0 }} item</div>
+                        @else
+                            <div class="h6 fw-bold mb-0 text-muted">-</div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -58,53 +58,30 @@
 
         <!-- Card 3: Kategori Terisi -->
         <div class="col-md-4">
-            <div class="card card-bps shadow-sm rounded h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center gap-3 mb-2">
-                        <div class="rounded-circle bg-info bg-opacity-10 p-3 text-info">
-                            <i class="bi bi-pie-chart-fill fs-4"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Kategori Terisi</div>
-                            @php
-                                $kategoriTerisiCount = $kategoris->where('barangs_count', '>', 0)->count();
-                                $persentaseTerisi = $totalKategori > 0 ? round(($kategoriTerisiCount / $totalKategori) * 100) : 0;
-                            @endphp
-                            <div class="h3 fw-bold mb-0 text-dark">{{ $persentaseTerisi }}%</div>
-                        </div>
+            <div class="card-bps p-3 h-100">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="rounded-circle bg-info bg-opacity-10 p-2 text-info">
+                        <i class="bi bi-pie-chart-fill fs-5"></i>
                     </div>
-                    <div class="progress" style="height: 6px;">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ $persentaseTerisi }}%" aria-valuenow="{{ $persentaseTerisi }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="flex-grow-1">
+                        <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Kategori Terisi</div>
+                        @php
+                            $persentaseTerisi = $totalKategori > 0 ? round(($kategoriFilled / $totalKategori) * 100) : 0;
+                        @endphp
+                        <div class="h5 fw-bold mb-0 text-dark">{{ $persentaseTerisi }}%</div>
                     </div>
-                    <div class="small text-muted mt-2" style="font-size: 0.75rem;">
-                        {{ $kategoriTerisiCount }} dari {{ $totalKategori }} kategori
-                    </div>
+                </div>
+                <div class="progress" style="height: 4px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ $persentaseTerisi }}%" aria-valuenow="{{ $persentaseTerisi }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="small text-muted mt-1" style="font-size: 0.65rem;">
+                    {{ $kategoriFilled }} dari {{ $totalKategori }} kategori
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Search Section -->
-    <div class="card-bps p-3 mb-3">
-        <form action="{{ route('dashboard') }}" method="GET">
-            <div class="input-group input-group-sm">
-                <span class="input-group-text bg-transparent border-end-0 text-muted">
-                    <i class="bi bi-search"></i>
-                </span>
-                <input type="text" name="search" value="{{ request('search') }}"
-                       class="form-control border-start-0 ps-0 shadow-none"
-                       placeholder="Cari kategori (Laptop, Printer, Kendaraan)...">
-                <button type="submit" class="btn-bps btn-bps-primary px-3">
-                    Cari
-                </button>
-                @if(request()->filled('search'))
-                    <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary d-flex align-items-center px-2 ms-2 rounded-2">
-                        <i class="bi bi-x-lg"></i>
-                    </a>
-                @endif
-            </div>
-        </form>
-    </div>
+    <h2 class="h5 fw-bold text-dark mb-2 mt-3">Kategori Barang</h2>
 
     <!-- Category Grid -->
     <div class="row g-3">
@@ -131,6 +108,7 @@
                         <i class="bi bi-folder2-open"></i> Buka
                     </a>
                     
+                    @if(auth()->user()->isAdmin())
                     <div class="dropdown">
                         <button class="btn btn-light btn-sm rounded-2 px-2 border" data-bs-toggle="dropdown">
                             <i class="bi bi-three-dots-vertical" style="font-size: 0.8rem;"></i>
@@ -153,6 +131,7 @@
                             </li>
                         </ul>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

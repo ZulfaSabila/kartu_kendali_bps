@@ -2,9 +2,9 @@
     <x-slot name="header">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0" style="font-size: 0.75rem;">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('kategoris.index') }}" class="text-decoration-none">Kelola Kategori</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Edit Kategori</li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none" style="color: #6b7280;">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('kategoris.index') }}" class="text-decoration-none" style="color: #6b7280;">Kelola Kategori</a></li>
+                <li class="breadcrumb-item active" aria-current="page" style="color: #003366;">Edit Kategori</li>
             </ol>
         </nav>
     </x-slot>
@@ -14,7 +14,7 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="fw-bold mb-0 text-primary">Edit Informasi Kategori</h6>
+                        <h6 class="fw-bold mb-0" style="color: #003366;">Edit Informasi Kategori</h6>
                         <a href="{{ route('kategoris.index') }}" class="btn btn-sm btn-outline-secondary">
                             <i class="bi bi-arrow-left"></i> Kembali
                         </a>
@@ -26,7 +26,7 @@
                         @method('PUT')
 
                         <div class="mb-3">
-                            <label class="form-label small fw-bold">Nama Kategori</label>
+                            <label class="form-label small fw-bold" style="color: #003366;">Nama Kategori</label>
                             <input type="text" name="nama_kategori" 
                                    class="form-control @error('nama_kategori') is-invalid @enderror" 
                                    value="{{ old('nama_kategori', $kategori->nama_kategori) }}" 
@@ -37,7 +37,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label small fw-bold">Deskripsi Kategori <span class="text-muted fw-normal">(Opsional)</span></label>
+                            <label class="form-label small fw-bold" style="color: #003366;">Deskripsi Kategori <span class="text-muted fw-normal">(Opsional)</span></label>
                             <textarea name="deskripsi" class="form-control" rows="3">{{ old('deskripsi', $kategori->deskripsi) }}</textarea>
                         </div>
 
@@ -45,7 +45,7 @@
                             <a href="{{ route('kategoris.index') }}" class="btn btn-outline-secondary px-3">
                                 Batal
                             </a>
-                            <button type="submit" class="btn btn-primary px-4">
+                            <button type="submit" class="btn px-4 text-white" style="background-color: #003366;">
                                 <i class="bi bi-save"></i> Simpan
                             </button>
                         </div>

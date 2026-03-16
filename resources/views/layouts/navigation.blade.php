@@ -29,6 +29,14 @@
                        <i class="bi bi-box-seam me-1"></i> Inventaris
                     </a>
                 </li>
+                @if(auth()->user()->isAdmin())
+                <li class="nav-item">
+                    <a class="nav-link px-3 {{ request()->routeIs('users.*') ? 'active fw-bold border-bottom' : '' }}" 
+                       href="{{ route('users.index') }}">
+                       <i class="bi bi-people me-1"></i> Kelola Pegawai
+                    </a>
+                </li>
+                @endif
             </ul>
 
             <!-- Right side: User Profile -->

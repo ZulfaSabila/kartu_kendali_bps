@@ -13,7 +13,11 @@ class BarangController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Barang::with('kategori');
+        $query = Barang::with('kategori')
+            ->withCount('pemeliharaans')
+            ->whereHas('kategori', function($q) {
+                $q->whereNull('deleted_at');
+            });
 
         if ($request->filled('kategori_id')) {
             $query->where('kategori_id', $request->kategori_id);
@@ -70,7 +74,7 @@ class BarangController extends Controller
 
     public function show(Barang $barang)
     {
-        $barang->load('kategori');
+        $barang->load(['kategori'])->loadCount('pemeliharaans');
         return view('barangs.show', compact('barang'));
     }
 
@@ -112,8 +116,10 @@ class BarangController extends Controller
     public function getByKategori($kategoriId)
     {
         $barangs = Barang::where('kategori_id', $kategoriId)
-                         ->select('id', 'nup_bmn', 'nama_barang', 'merk_type', 'lokasi')
-                         ->get();
+            ->whereHas('kategori', function($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->get(['id', 'nama_barang', 'nup_bmn']);
 
         return response()->json($barangs);
     }

@@ -1,22 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
         <style>
-            .table-bps thead th {
-                background-color: #003366 !important;
-                color: white !important;
-                text-transform: uppercase;
-                font-size: 0.7rem !important;
-                letter-spacing: 0.05em;
-                padding: 12px 10px !important;
-                border: none !important;
-                text-align: center;
-            }
-            .table-bps tbody td {
-                vertical-align: middle !important;
-                font-size: 0.8rem !important;
-                padding: 10px !important;
-                border-bottom: 1px solid #edf2f7 !important;
-            }
             .btn-action-group {
                 display: inline-flex;
                 border: 1px solid #e2e8f0;
@@ -59,11 +43,10 @@
             /* Currency Alignment */
             .currency-cell {
                 display: flex;
-                justify-content: space-between;
+                justify-content: flex-end;
                 align-items: center;
-                gap: 4px;
-                min-width: 100px;
-                font-family: 'Inter', sans-serif; /* Consistent font with body */
+                gap: 6px;
+                font-family: 'Inter', sans-serif;
             }
             .currency-symbol {
                 color: #94a3b8;
@@ -72,37 +55,38 @@
             }
             .currency-value {
                 text-align: right;
-                flex-grow: 1;
             }
         </style>
         <div class="row align-items-center">
             <div class="col-md-6">
                 <nav aria-label="breadcrumb" class="mb-1">
                     <ol class="breadcrumb mb-0" style="font-size: 0.75rem;">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('barangs.index') }}" class="text-decoration-none">Inventaris</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Riwayat Pemeliharaan</li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none" style="color: #6b7280;">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('barangs.index') }}" class="text-decoration-none" style="color: #6b7280;">Inventaris</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" style="color: #003366;">Riwayat Pemeliharaan</li>
                     </ol>
                 </nav>
-                <h1 class="page-title">Manajemen Pemeliharaan Barang</h1>
+                <h1 class="page-title" style="color: #003366;">Manajemen Pemeliharaan Barang</h1>
             </div>
             <div class="col-md-6 text-md-end mt-2 mt-md-0 d-flex justify-content-md-end gap-2">
-                <a href="{{ route('pemeliharaans.create', ['barang_id' => request('barang_id')]) }}" class="btn-bps btn-bps-primary">
+                @if(auth()->user()->isAdmin())
+                <a href="{{ route('pemeliharaans.create', ['barang_id' => request('barang_id')]) }}" class="btn-bps btn-bps-primary px-4 py-2">
                     <i class="bi bi-plus-lg"></i> Tambah Data
                 </a>
-                <a href="{{ route('pemeliharaans.export.excel', ['barang_id' => request('barang_id'), 'search' => request('search')]) }}" class="btn-bps btn-bps-outline" style="color: #1d6f42; border-color: #1d6f42;">
+                <a href="{{ route('pemeliharaans.export.excel', ['barang_id' => request('barang_id'), 'search' => request('search')]) }}" class="btn-bps btn-bps-outline px-4 py-2" style="color: #1d6f42; border-color: #1d6f42;">
                     <i class="bi bi-file-earmark-excel"></i> Excel
                 </a>
-                <a href="{{ route('pemeliharaans.export.pdf', ['barang_id' => request('barang_id')]) }}" class="btn-bps btn-bps-outline">
+                <a href="{{ route('pemeliharaans.export.pdf', ['barang_id' => request('barang_id')]) }}" class="btn-bps btn-bps-outline px-4 py-2">
                     Cetak PDF
                 </a>
+                @endif
             </div>
         </div>
     </x-slot>
 
     @if($selectedBarang)
     <!-- Asset Info Horizontal Strip -->
-    <div class="card-bps p-3 mb-3">
+    <div class="card-bps p-3 mb-2 mt-2">
         <div class="row g-0">
             <div class="col-md-2 border-end">
                 <div class="px-2">
@@ -133,21 +117,24 @@
     @endif
 
     <!-- Search Section -->
-    <div class="card-bps p-2 mb-3">
+    <div class="card-bps p-2 mb-2">
         <form action="{{ route('pemeliharaans.index') }}" method="GET">
             <input type="hidden" name="barang_id" value="{{ request('barang_id') }}">
-            <div class="input-group input-group-sm">
+            <div class="input-group" style="height: 40px;">
                 <span class="input-group-text bg-transparent border-0 text-muted ps-3">
                     <i class="bi bi-search"></i>
                 </span>
                 <input type="text" name="search" value="{{ request('search') }}"
                        class="form-control border-0 shadow-none"
+                       style="font-style: italic;"
                        placeholder="Cari berdasarkan uraian atau kode pemeliharaan...">
-                <button type="submit" class="btn-bps btn-bps-primary px-3 rounded-2">
+                <button type="submit" class="btn-bps btn-bps-primary px-4" style="border-radius: 8px !important; height: 40px;">
                     Cari Riwayat
                 </button>
                 @if(request()->filled('search'))
-                    <a href="{{ route('pemeliharaans.index', ['barang_id' => request('barang_id')]) }}" class="btn btn-outline-secondary d-flex align-items-center px-2 ms-2 rounded-2">
+                    <a href="{{ route('pemeliharaans.index', ['barang_id' => request('barang_id')]) }}" 
+                       class="btn-bps btn-bps-outline d-flex align-items-center justify-content-center ms-2" 
+                       style="border-radius: 8px !important; width: 40px; height: 40px; padding: 0;">
                         <i class="bi bi-x-lg"></i>
                     </a>
                 @endif
@@ -161,20 +148,22 @@
             <table class="table table-bps table-hover mb-0">
                 <thead>
                     <tr>
-                        <th class="text-center" style="width: 50px;">NO</th>
+                        <th style="width: 50px;">NO</th>
                         <th>TANGGAL PEKERJAAN</th>
                         <th>RINCIAN PEKERJAAN</th>
-                        <th class="text-end">BIAYA (RP)</th>
-                        <th class="text-end">BIAYA KUMULATIF</th>
-                        <th class="text-end">PAGU</th>
-                        <th class="text-end">SISA ANGGARAN</th>
-                        <th class="text-center" style="width: 120px;">AKSI</th>
+                        <th>BIAYA (RP)</th>
+                        <th>BIAYA KUMULATIF</th>
+                        <th>PAGU</th>
+                        <th>SISA ANGGARAN</th>
+                        @if(auth()->user()->isAdmin())
+                        <th style="width: 120px;">AKSI</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($pemeliharaans as $index => $item)
                     @php
-                        $pagu_anggaran = $item->barang->pagu_anggaran;
+                        $pagu_anggaran = $item->pagu ?? $item->barang->pagu_anggaran;
                         $sisaAnggaran = $pagu_anggaran - $item->biaya_kumulatif_dinamis;
                     @endphp
                     <tr>
@@ -212,6 +201,7 @@
                                 </div>
                             </div>
                         </td>
+                        @if(auth()->user()->isAdmin())
                         <td class="text-center">
                             <div class="btn-action-group">
                                 <a href="{{ route('pemeliharaans.edit', $item->id) }}" class="btn-act btn-act-edit" title="Edit">
@@ -225,10 +215,11 @@
                                 </form>
                             </div>
                         </td>
+                        @endif
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center py-4">
+                        <td colspan="{{ auth()->user()->isAdmin() ? 8 : 7 }}" class="text-center py-4">
                             <i class="bi bi-journal-x fs-2 text-muted opacity-25"></i>
                             <h6 class="mt-2 text-muted">Belum ada riwayat pemeliharaan</h6>
                         </td>

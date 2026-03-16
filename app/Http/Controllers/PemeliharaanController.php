@@ -17,7 +17,13 @@ class PemeliharaanController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Pemeliharaan::with('barang.kategori');
+        $query = Pemeliharaan::with('barang.kategori')
+            ->whereHas('barang', function($q) {
+                $q->whereNull('deleted_at')
+                  ->whereHas('kategori', function($kq) {
+                      $kq->whereNull('deleted_at');
+                  });
+            });
 
         // Filter berdasarkan kategori jika ada
         if ($request->filled('kategori_id')) {
@@ -53,10 +59,20 @@ class PemeliharaanController extends Controller
         return view('pemeliharaans.index', compact('pemeliharaans', 'selectedBarang'));
     }
     
-    public function create()
+    public function create(Request $request)
     {
         $kategoris = Kategori::all();
-        return view('pemeliharaans.create', compact('kategoris'));
+        $selectedBarang = null;
+        $barangsInKategori = collect([]);
+
+        if ($request->filled('barang_id')) {
+            $selectedBarang = Barang::with('kategori')->find($request->barang_id);
+            if ($selectedBarang) {
+                $barangsInKategori = Barang::where('kategori_id', $selectedBarang->kategori_id)->get();
+            }
+        }
+
+        return view('pemeliharaans.create', compact('kategoris', 'selectedBarang', 'barangsInKategori'));
     }
     
     public function store(Request $request)
@@ -68,12 +84,18 @@ class PemeliharaanController extends Controller
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'rincian_pekerjaan' => 'nullable|string',
             'biaya' => 'required|numeric|min:0',
+            'pagu' => 'required|numeric|min:0',
         ]);
 
         $barang = Barang::findOrFail($request->barang_id);
 
         $validated['user_id'] = auth()->id();
-        Pemeliharaan::create($validated);
+        
+        // Simpan pemeliharaan dengan pagu yang diinput
+        $pemeliharaan = Pemeliharaan::create($validated);
+
+        // Rekalkulasi biaya kumulatif
+        $this->recalculateCumulativeCosts($request->barang_id);
 
         return redirect()->route('pemeliharaans.index', ['barang_id' => $request->barang_id])->with('success', 'Data pemeliharaan berhasil ditambahkan!');
     }
@@ -92,20 +114,12 @@ class PemeliharaanController extends Controller
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'rincian_pekerjaan' => 'nullable|string',
             'biaya' => 'required|numeric|min:0',
+            'pagu' => 'required|numeric|min:0',
         ]);
-
-        $validated['pagu'] = $pemeliharaan->barang->pagu_anggaran;
-
-        // Hitung ulang biaya kumulatif otomatis saat update
-        $previousTotal = Pemeliharaan::where('barang_id', $pemeliharaan->barang_id)
-            ->where('id', '<', $pemeliharaan->id)
-            ->sum('biaya');
-        $validated['biaya_kumulatif'] = $previousTotal + $request->biaya;
 
         $pemeliharaan->update($validated);
 
-        // Opsi tambahan: Jika biaya di record tengah diubah, idealnya biaya_kumulatif record setelahnya juga harus diupdate.
-        // Namun sesuai instruksi dasar, kita fokus pada store dan update record saat ini.
+        // Rekalkulasi biaya kumulatif record setelahnya
         $this->recalculateCumulativeCosts($pemeliharaan->barang_id);
 
         return redirect()->route('pemeliharaans.index', ['barang_id' => $pemeliharaan->barang_id])
@@ -139,24 +153,40 @@ class PemeliharaanController extends Controller
 
     public function exportPdf(Request $request)
     {
-        $query = Pemeliharaan::with('barang.kategori');
+        $query = Pemeliharaan::with('barang.kategori')
+            ->whereHas('barang', function($q) {
+                $q->whereNull('deleted_at')
+                  ->whereHas('kategori', function($kq) {
+                      $kq->whereNull('deleted_at');
+                  });
+            });
         
         if ($request->filled('barang_id')) {
             $query->where('barang_id', $request->barang_id);
         }
 
-        $pemeliharaans = $query->orderBy('tanggal_mulai', 'asc')->lazy();
+        // Menggunakan get() daripada lazy() untuk memastikan koleksi data siap pakai
+        $pemeliharaans = $query->orderBy('tanggal_mulai', 'asc')->get();
         $groupedData = $pemeliharaans->groupBy('barang_id');
 
-        // REQUIRED FIX: Jika barang_id ada tapi datanya kosong, tambahkan barang tersebut dengan collection kosong
-        if ($request->filled('barang_id') && $groupedData->isEmpty()) {
+        // Jika barang_id ada tapi tidak ada riwayat pemeliharaan, kita tetap ambil objek barangnya
+        $barang = null;
+        if ($request->filled('barang_id')) {
             $barang = Barang::find($request->barang_id);
             if ($barang && $groupedData->isEmpty()) {
                 $groupedData = collect([$barang->id => collect([])]);
             }
+        } elseif (!$groupedData->isEmpty()) {
+            // Ambil barang pertama dari data yang ada
+            $firstBarangId = $groupedData->keys()->first();
+            $barang = $pemeliharaans->where('barang_id', $firstBarangId)->first()->barang ?? null;
         }
 
-        $pdf = Pdf::loadView('pemeliharaans.pdf', compact('groupedData'))->setPaper('a4', 'landscape');
+        if (!$barang && $groupedData->isEmpty()) {
+            return back()->with('error', 'Data tidak ditemukan untuk dicetak.');
+        }
+
+        $pdf = Pdf::loadView('pemeliharaans.pdf', compact('groupedData', 'barang'))->setPaper('a4', 'landscape');
         return $pdf->download('kartu-kendali-' . date('Y-m-d') . '.pdf');
     }
 
@@ -165,6 +195,6 @@ class PemeliharaanController extends Controller
         $barangId = $request->barang_id;
         $search = $request->search;
 
-        return Excel::download(new PemeliharaanExport($barangId, $search), 'riwayat-pemeliharaan-' . date('Y-m-d') . '.xlsx');
+        return Excel::download(new PemeliharaanExport($barangId, $search), 'kartu-kendali-' . date('Y-m-d') . '.xlsx');
     }
 }
