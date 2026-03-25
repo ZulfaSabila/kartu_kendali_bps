@@ -9,7 +9,7 @@
         
         .header {
             margin-bottom: 15px;
-            padding-bottom: 5px;
+            padding-bottom: 8px;
         }
         
         .kop-table { width: 100%; border-collapse: collapse; border: none; }
@@ -21,10 +21,12 @@
         .kop-text p { font-size: 8.5pt; color: #000; line-height: 1.2; margin-top: 2px; }
         .kop-text a { color: blue; text-decoration: underline; }
         
-        .thick-line { border-bottom: 3px solid #000; margin-top: 2px; }
+        .thick-line { border-bottom: 4px solid #003366; margin-top: 2px; }
         
         .info-table { width: 100%; margin-bottom: 15px; border-collapse: collapse; }
-        .info-table td { padding: 3px 5px; font-size: 10pt; color: #333; }
+        .info-table td { padding: 3px 5px; font-size: 10pt; color: #333; vertical-align: top; }
+        .info-label { width: 120px; }
+        .info-colon { width: 15px; text-align: center; }
         
         .main-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; table-layout: fixed; }
         .main-table thead { display: table-header-group; }
@@ -93,26 +95,34 @@
 
     <table class="info-table">
         <tr>
-            <td width="15%">NUP BMN</td><td width="35%">: <strong>{{ $barang->nup_bmn }}</strong></td>
-            <td width="15%">Nama Barang</td><td width="35%">: <strong>{{ $barang->nama_barang }}</strong></td>
+            <td class="info-label">NUP BMN</td>
+            <td class="info-colon">:</td>
+            <td><strong>{{ $barang->nup_bmn }}</strong></td>
+            <td class="info-label">Nama Barang</td>
+            <td class="info-colon">:</td>
+            <td><strong>{{ $barang->nama_barang }}</strong></td>
         </tr>
         <tr>
-            <td>Merk/Type</td><td>: {{ $barang->merk_type ?? '-' }}</td>
-            <td>Lokasi</td><td>: {{ $barang->lokasi ?? 'Kantor BPS' }}</td>
+            <td class="info-label">Merk/Type</td>
+            <td class="info-colon">:</td>
+            <td>{{ $barang->merk_type ?? '-' }}</td>
+            <td class="info-label">Lokasi</td>
+            <td class="info-colon">:</td>
+            <td>{{ $barang->lokasi ?? 'Kantor BPS' }}</td>
         </tr>
     </table>
 
     <table class="main-table">
         <thead>
             <tr>
-                <th width="4%">NO</th>
+                <th width="5%">NO</th>
                 <th width="12%">TANGGAL MULAI PEKERJAAN</th>
                 <th width="12%">TANGGAL SELESAI PEKERJAAN</th>
-                <th width="14%">RINCIAN PEKERJAAN</th>
+                <th width="26%">RINCIAN PEKERJAAN</th>
                 <th width="11%">BIAYA (Rp)</th>
                 <th width="11%">BIAYA KUMULATIF (Rp)</th>
                 <th width="11%">PAGU (Rp)</th>
-                <th width="11%">SISA ANGGARAN(Rp)</th>
+                <th width="12%">SISA ANGGARAN (Rp)</th>
             </tr>
         </thead>
         <tbody>
@@ -133,10 +143,10 @@
                             <td class="text-center">{{ $p->tanggal_mulai ? $p->tanggal_mulai->format('d/m/Y') : '-' }}</td>
                             <td class="text-center">{{ $p->tanggal_selesai ? $p->tanggal_selesai->format('d/m/Y') : '-' }}</td>
                             <td>{{ $p->rincian_pekerjaan }}</td>
-                            <td class="text-right">{{ number_format($p->biaya, 0, ',', '.') }}</td>
-                            <td class="text-right bg-light">{{ number_format($p->biaya_kumulatif_dinamis, 0, ',', '.') }}</td>
-                            <td class="text-right">{{ number_format($currentPagu, 0, ',', '.') }}</td>
-                            <td class="text-right">{{ number_format($sisaAnggaran, 0, ',', '.') }}</td>
+                            <td class="text-right">Rp {{ number_format($p->biaya, 0, ',', '.') }}</td>
+                            <td class="text-right bg-light">Rp {{ number_format($p->biaya_kumulatif_dinamis, 0, ',', '.') }}</td>
+                            <td class="text-right">Rp {{ number_format($currentPagu, 0, ',', '.') }}</td>
+                            <td class="text-right">Rp {{ number_format($sisaAnggaran, 0, ',', '.') }}</td>
                         </tr>
                     @endforeach
             @endif

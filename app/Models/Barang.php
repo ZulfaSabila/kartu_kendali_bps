@@ -20,6 +20,10 @@ class Barang extends Model
         'pagu_anggaran',
     ];
 
+    protected $casts = [
+        'pagu_anggaran' => 'decimal:2',
+    ];
+
     // Relasi ke User
     public function user()
     {
@@ -38,7 +42,7 @@ class Barang extends Model
         return $this->hasMany(Pemeliharaan::class);
     }
 
-    // Helper: Total biaya pemeliharaan
+    /** @deprecated Use withSum('pemeliharaans', 'biaya') in controller for list queries */
     public function getTotalBiayaAttribute()
     {
         return $this->pemeliharaans()->sum('biaya');

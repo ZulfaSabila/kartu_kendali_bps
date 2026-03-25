@@ -12,6 +12,9 @@
                 display: flex;
                 flex-direction: column;
             }
+            @media (max-width: 576px) {
+                .asset-card { padding: 12px; }
+            }
             .asset-card:hover {
                 transform: translateY(-4px);
                 box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -75,6 +78,10 @@
                 font-size: 12px;
                 color: #64748b;
                 flex-shrink: 0;
+            }
+            @media (max-width: 576px) {
+                .detail-label { width: 75px; font-size: 0.8rem; }
+                .detail-value { font-size: 0.8rem; }
             }
             .detail-value {
                 font-size: 13px;

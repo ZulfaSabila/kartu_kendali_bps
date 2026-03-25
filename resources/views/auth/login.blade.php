@@ -40,7 +40,7 @@
         }
 
         .login-left {
-            background-color: var(--bps-blue);
+            background-color: #1e3a5f;
             width: 40%;
             display: flex;
             flex-direction: column;
@@ -50,24 +50,34 @@
             color: white;
             position: relative;
             text-align: center;
+            min-height: 100vh;
         }
 
         .login-right {
             width: 60%;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 3rem 2rem;
             background-color: var(--bg-right);
+            min-height: 100vh;
         }
 
         .login-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            background: #ffffff;
+            padding: 40px 48px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10), 0 1.5px 6px rgba(0,0,0,0.06);
             width: 100%;
             max-width: 420px;
+        }
+
+        @media (max-width: 576px) {
+            .login-card {
+                padding: 28px 20px;
+                margin: 16px;
+            }
         }
 
         .bps-logo-circle {
@@ -78,7 +88,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 2rem;
+            margin-bottom: 24px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
@@ -89,15 +99,17 @@
         }
 
         .btn-bps {
-            background-color: var(--bps-blue);
+            background-color: #1e3a5f;
             color: white;
             font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
+            padding: 13px;
+            font-size: 15px;
+            border-radius: 8px;
             border: none;
             transition: all 0.3s ease;
             width: 100%;
             cursor: pointer;
+            margin-top: 24px;
         }
 
         .btn-bps:hover {
@@ -108,17 +120,19 @@
 
         .input-field {
             width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid #E2E8F0;
-            border-radius: 0.5rem;
-            margin-top: 0.5rem;
+            background-color: #f0f4f8;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s ease;
         }
 
         .input-field:focus {
-            border-color: var(--bps-blue);
-            ring: 2px solid rgba(0, 51, 102, 0.1);
+            border-color: #1e3a5f;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
         }
 
         .password-toggle {
@@ -164,9 +178,9 @@
             <div class="bps-logo-circle">
                 <img src="{{ asset('images/logo-bps.png') }}" alt="Logo BPS" style="width: 80px; height: auto;">
             </div>
-            <h1 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.25rem; letter-spacing: -0.025em;">BADAN PUSAT STATISTIK</h1>
-            <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; opacity: 0.9;">KOTA BONTANG</h2>
-            <p style="font-size: 1rem; opacity: 0.85; max-width: 300px; line-height: 1.5;">
+            <h1 style="font-size: 22px; font-weight: 800; margin-bottom: 0.25rem; letter-spacing: 1px;">BADAN PUSAT STATISTIK</h1>
+            <h2 style="font-size: 15px; font-weight: 600; margin-bottom: 1.5rem; letter-spacing: 3px; margin-top: 4px;">KOTA BONTANG</h2>
+            <p style="font-size: 13px; opacity: 0.75; max-width: 300px; line-height: 1.5; margin-top: 16px;">
                 Sistem Informasi Kartu Kendali BMN
             </p>
             
@@ -178,9 +192,10 @@
         <!-- RIGHT SIDE: Form -->
         <div class="login-right">
             <div class="login-card">
-                <div style="margin-bottom: 2rem;">
-                    <h3 style="font-size: 1.5rem; font-weight: 700; color: #1A202C; margin-bottom: 0.25rem;">Masuk ke Sistem</h3>
-                    <p style="color: #718096; font-size: 0.875rem;">Kartu Kendali BMN</p>
+                <div style="margin-bottom: 32px; text-align: center;">
+                    <h3 style="font-size: 28px; font-weight: 800; color: #1e3a5f; margin-bottom: 8px; letter-spacing: -0.5px;">Masuk ke Sistem</h3>
+                    <p style="color: #64748b; font-size: 14px; font-weight: 500;">Sistem Informasi Kartu Kendali BMN</p>
+                    <div style="width: 40px; height: 3px; background: #1e3a5f; margin: 12px auto 0; border-radius: 2px; opacity: 0.15;"></div>
                 </div>
 
                 <!-- Session Status -->
@@ -190,18 +205,16 @@
                     @csrf
 
                     <!-- Email Address -->
-                    <div style="margin-bottom: 1.25rem;">
-                        <label for="email" style="display: block; font-size: 0.875rem; font-weight: 600; color: #4A5568;">Email</label>
+                    <div style="margin-bottom: 20px;">
+                        <label for="email" style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 6px;">Email</label>
                         <input id="email" class="input-field" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="nama@bps.go.id" />
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
                     <!-- Password -->
-                    <div style="margin-bottom: 1.25rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <label for="password" style="display: block; font-size: 0.875rem; font-weight: 600; color: #4A5568;">Password</label>
-                        </div>
-                        <div style="position: relative; margin-top: 0.5rem;">
+                    <div style="margin-bottom: 20px;">
+                        <label for="password" style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 6px;">Password</label>
+                        <div style="position: relative;">
                             <input id="password" class="input-field" 
                                     :type="showPassword ? 'text' : 'password'"
                                     name="password"
@@ -214,15 +227,15 @@
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>
 
-                    <!-- Remember Me -->
-                    <div style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+                    <!-- Remember Me & Forgot Password -->
+                    <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
                         <label for="remember_me" style="display: inline-flex; align-items: center; cursor: pointer;">
                             <input id="remember_me" type="checkbox" name="remember" style="width: 1rem; height: 1rem; border-radius: 0.25rem; border: 1px solid #CBD5E0; color: var(--bps-blue); focus:ring-var(--bps-blue);">
-                            <span style="margin-left: 0.5rem; font-size: 0.875rem; color: #718096;">Ingat Saya</span>
+                            <span style="margin-left: 0.5rem; font-size: 13px; color: #374151;">Ingat Saya</span>
                         </label>
                         
                         @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" style="font-size: 0.875rem; color: var(--bps-blue); text-decoration: none; font-weight: 500;">
+                            <a href="{{ route('password.request') }}" style="font-size: 13px; color: #1e3a5f; text-decoration: none; font-weight: 500;">
                                 Lupa Password?
                             </a>
                         @endif

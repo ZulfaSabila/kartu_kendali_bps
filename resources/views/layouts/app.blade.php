@@ -67,13 +67,24 @@
         }
 
         .page-title {
-            font-size: 1.5rem;
+            font-size: clamp(1.1rem, 4vw, 1.5rem);
             font-weight: 800;
             color: var(--bps-blue-dark);
             letter-spacing: -0.5px;
             margin: 0;
             border-left: 4px solid var(--bps-green);
             padding-left: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 576px) {
+            .page-title {
+                white-space: normal;
+                font-size: 1.1rem;
+                padding-left: 0.75rem;
+            }
         }
 
         /* ── Buttons ── */

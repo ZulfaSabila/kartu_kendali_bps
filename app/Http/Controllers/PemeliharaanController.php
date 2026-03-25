@@ -80,7 +80,7 @@ class PemeliharaanController extends Controller
         $validated = $request->validate([
             'kategori_id' => 'required|exists:kategoris,id',
             'barang_id' => 'required|exists:barangs,id',
-            'tanggal_mulai' => 'nullable|date',
+            'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'rincian_pekerjaan' => 'nullable|string',
             'biaya' => 'required|numeric|min:0',
@@ -110,7 +110,7 @@ class PemeliharaanController extends Controller
     public function update(Request $request, Pemeliharaan $pemeliharaan)
     {
         $validated = $request->validate([
-            'tanggal_mulai' => 'nullable|date',
+            'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'rincian_pekerjaan' => 'nullable|string',
             'biaya' => 'required|numeric|min:0',
@@ -147,6 +147,7 @@ class PemeliharaanController extends Controller
     {
         $barangId = $pemeliharaan->barang_id;
         $pemeliharaan->delete();
+        $this->recalculateCumulativeCosts($barangId);
         return redirect()->route('pemeliharaans.index', ['barang_id' => $barangId])
                         ->with('success', 'Data pemeliharaan berhasil dihapus!');
     }

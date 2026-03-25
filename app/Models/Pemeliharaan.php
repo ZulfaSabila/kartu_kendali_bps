@@ -51,7 +51,8 @@ class Pemeliharaan extends Model
     public function getBiayaKumulatifDinamisAttribute()
     {
         return $this->barang->pemeliharaans()
-            ->where('created_at', '<=', $this->created_at)
+            ->where('tanggal_mulai', '<=', $this->tanggal_mulai)
+            ->orderBy('tanggal_mulai')
             ->sum('biaya');
     }
 }

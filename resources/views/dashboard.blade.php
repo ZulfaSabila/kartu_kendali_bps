@@ -1,5 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
+        <style>
+            @media (max-width: 576px) { 
+                .stat-card .display-4, 
+                .stat-card h2, 
+                .stat-card .fs-1,
+                .stat-card .h5,
+                .stat-card .h6 { 
+                    font-size: 1.8rem !important; 
+                } 
+                .stat-card .icon, 
+                .stat-card i { 
+                    font-size: 1.5rem !important; 
+                } 
+                .stat-card { 
+                    padding: 16px !important; 
+                } 
+            }
+        </style>
         <div class="row align-items-center">
             <div class="col-md-6">
                 <nav aria-label="breadcrumb" class="mb-1">
@@ -23,7 +41,7 @@
     <div class="row g-3 mt-1">
         <!-- Card 1: Total Kategori -->
         <div class="col-md-4">
-            <div class="card-bps p-3 h-100">
+            <div class="card-bps stat-card p-3 h-100">
                 <div class="d-flex align-items-center gap-3">
                     <div class="rounded-circle bg-primary bg-opacity-10 p-2 text-primary">
                         <i class="bi bi-grid-fill fs-5"></i>
@@ -38,7 +56,7 @@
 
         <!-- Card 2: Kategori Terbanyak Item -->
         <div class="col-md-4">
-            <div class="card-bps p-3 h-100">
+            <div class="card-bps stat-card p-3 h-100">
                 <div class="d-flex align-items-center gap-3">
                     <div class="rounded-circle bg-success bg-opacity-10 p-2 text-success">
                         <i class="bi bi-stars fs-5"></i>
@@ -58,7 +76,7 @@
 
         <!-- Card 3: Kategori Terisi -->
         <div class="col-md-4">
-            <div class="card-bps p-3 h-100">
+            <div class="card-bps stat-card p-3 h-100">
                 <div class="d-flex align-items-center gap-3 mb-2">
                     <div class="rounded-circle bg-info bg-opacity-10 p-2 text-info">
                         <i class="bi bi-pie-chart-fill fs-5"></i>

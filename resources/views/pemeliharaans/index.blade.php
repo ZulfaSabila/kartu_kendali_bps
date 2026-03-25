@@ -88,19 +88,19 @@
     <!-- Asset Info Horizontal Strip -->
     <div class="card-bps p-3 mb-2 mt-2">
         <div class="row g-0">
-            <div class="col-md-2 border-end">
+            <div class="col-md-2">
                 <div class="px-2">
                     <div class="text-muted uppercase mb-1" style="font-size: 0.6rem; letter-spacing: 0.05em;">NUP BMN</div>
                     <div class="fw-bold text-dark" style="font-size: 0.85rem;">{{ $selectedBarang->nup_bmn ?? '-' }}</div>
                 </div>
             </div>
-            <div class="col-md-3 border-end">
+            <div class="col-md-3">
                 <div class="px-3">
                     <div class="text-muted uppercase mb-1" style="font-size: 0.6rem; letter-spacing: 0.05em;">NAMA ASET</div>
                     <div class="fw-bold text-dark" style="font-size: 0.85rem;">{{ $selectedBarang->nama_barang }}</div>
                 </div>
             </div>
-            <div class="col-md-4 border-end">
+            <div class="col-md-4">
                 <div class="px-3">
                     <div class="text-muted uppercase mb-1" style="font-size: 0.6rem; letter-spacing: 0.05em;">MERK / TIPE</div>
                     <div class="fw-bold text-dark" style="font-size: 0.85rem;">{{ $selectedBarang->merk_type ?? '-' }}</div>

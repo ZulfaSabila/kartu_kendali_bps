@@ -15,6 +15,7 @@ class BarangController extends Controller
     {
         $query = Barang::with('kategori')
             ->withCount('pemeliharaans')
+            ->withSum('pemeliharaans', 'biaya')
             ->whereHas('kategori', function($q) {
                 $q->whereNull('deleted_at');
             });
@@ -62,7 +63,7 @@ class BarangController extends Controller
             'nama_barang' => 'required|string|max:255',
             'merk_type' => 'nullable|string|max:255',
             'lokasi' => 'nullable|string|max:255',
-            'pagu_anggaran' => 'required|numeric|min:0',
+            'pagu_anggaran' => 'required|numeric|min:1',
         ]);
 
         $validated['user_id'] = auth()->id();
@@ -92,7 +93,7 @@ class BarangController extends Controller
             'nama_barang' => 'required|string|max:255',
             'merk_type' => 'nullable|string|max:255',
             'lokasi' => 'nullable|string|max:255',
-            'pagu_anggaran' => 'required|numeric|min:0',
+            'pagu_anggaran' => 'required|numeric|min:1',
         ]);
 
         $barang->update($validated);
