@@ -40,7 +40,10 @@
         }
 
         .login-left {
-            background-color: #1e3a5f;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.05) 0%, transparent 50%), 
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.03) 0%, transparent 40%), 
+                linear-gradient(135deg, #003366 0%, #001a4d 100%);
             width: 40%;
             display: flex;
             flex-direction: column;
@@ -51,6 +54,7 @@
             position: relative;
             text-align: center;
             min-height: 100vh;
+            overflow: hidden;
         }
 
         .login-right {
@@ -60,7 +64,7 @@
             justify-content: center;
             align-items: center;
             padding: 3rem 2rem;
-            background-color: var(--bg-right);
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             min-height: 100vh;
         }
 
@@ -68,9 +72,26 @@
             background: #ffffff;
             padding: 40px 48px;
             border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10), 0 1.5px 6px rgba(0,0,0,0.06);
+            border-top: 3px solid #003366;
+            box-shadow: 0 20px 60px rgba(0, 51, 102, 0.15);
             width: 100%;
             max-width: 420px;
+            transition: all 0.3s ease;
+        }
+
+        .floating-circle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .accent-line {
+            width: 60px;
+            height: 3px;
+            background-color: var(--bps-green);
+            margin-top: 1rem;
+            border-radius: 2px;
         }
 
         @media (max-width: 576px) {
@@ -90,6 +111,8 @@
             align-items: center;
             margin-bottom: 24px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
         }
 
         .bps-logo-circle span {
@@ -99,7 +122,7 @@
         }
 
         .btn-bps {
-            background-color: #1e3a5f;
+            background: linear-gradient(135deg, #003366 0%, #001a4d 100%);
             color: white;
             font-weight: 600;
             padding: 13px;
@@ -113,9 +136,9 @@
         }
 
         .btn-bps:hover {
-            background-color: var(--bps-green);
+            background: linear-gradient(135deg, #004080 0%, #002966 100%);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 166, 81, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 51, 102, 0.25);
         }
 
         .input-field {
@@ -175,14 +198,20 @@
     <div class="login-container">
         <!-- LEFT SIDE: Branding -->
         <div class="login-left">
+            <!-- Decorative Background Elements -->
+            <div class="floating-circle" style="width: 200px; height: 200px; top: -50px; left: -50px;"></div>
+            <div class="floating-circle" style="width: 150px; height: 150px; bottom: 10%; right: -30px; opacity: 0.08;"></div>
+            <div class="floating-circle" style="width: 100px; height: 100px; top: 20%; right: 10%; opacity: 0.03;"></div>
+
             <div class="bps-logo-circle">
                 <img src="{{ asset('images/logo-bps.png') }}" alt="Logo BPS" style="width: 80px; height: auto;">
             </div>
-            <h1 style="font-size: 22px; font-weight: 800; margin-bottom: 0.25rem; letter-spacing: 1px;">BADAN PUSAT STATISTIK</h1>
-            <h2 style="font-size: 15px; font-weight: 600; margin-bottom: 1.5rem; letter-spacing: 3px; margin-top: 4px;">KOTA BONTANG</h2>
-            <p style="font-size: 13px; opacity: 0.75; max-width: 300px; line-height: 1.5; margin-top: 16px;">
+            <h1 style="font-size: 22px; font-weight: 800; margin-bottom: 0.25rem; letter-spacing: 1px; position: relative; z-index: 2;">BADAN PUSAT STATISTIK</h1>
+            <h2 style="font-size: 15px; font-weight: 600; margin-bottom: 1.5rem; letter-spacing: 3px; margin-top: 4px; position: relative; z-index: 2;">KOTA BONTANG</h2>
+            <p style="font-size: 13px; opacity: 0.75; max-width: 300px; line-height: 1.5; margin-top: 16px; margin-bottom: 0; position: relative; z-index: 2;">
                 Sistem Informasi Kartu Kendali BMN
             </p>
+            <div class="accent-line" style="margin-top: 12px; position: relative; z-index: 2;"></div>
             
             <div class="tagline-bottom">
                 © 2026 BPS Kota Bontang

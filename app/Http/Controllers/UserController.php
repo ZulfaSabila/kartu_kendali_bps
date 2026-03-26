@@ -53,4 +53,18 @@ class UserController extends Controller
         $status = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
         return back()->with('success', "Akun pegawai berhasil $status.");
     }
+
+    /**
+     * Reset the user password to default.
+     */
+    public function resetPassword(User $user)
+    {
+        $defaultPassword = config('app.default_user_password', env('DEFAULT_USER_PASSWORD', 'BPS@Bontang2026!'));
+        
+        $user->update([
+            'password' => Hash::make($defaultPassword)
+        ]);
+
+        return back()->with('success', "Password pegawai {$user->name} berhasil di-reset ke default.");
+    }
 }

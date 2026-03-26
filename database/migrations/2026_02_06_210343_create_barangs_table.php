@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('barangs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kategori_id')->constrained('kategoris')->onDelete('cascade');
+            $table->foreignId('kategori_id')->constrained('kategoris')->onDelete('restrict');
             $table->string('nup_bmn')->nullable();
             $table->string('nama_barang')->nullable();
             $table->string('merk_type')->nullable();
             $table->string('lokasi')->default('Bontang');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
             $table->timestamps();
             
             // Index untuk performa

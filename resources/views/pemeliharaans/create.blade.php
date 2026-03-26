@@ -95,7 +95,7 @@
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold" style="color: #003366;">Tanggal Mulai</label>
-                                <input type="date" name="tanggal_mulai" class="form-control @error('tanggal_mulai') is-invalid @enderror" value="{{ old('tanggal_mulai', date('Y-m-d')) }}" required>
+                                <input type="date" name="tanggal_mulai" class="form-control @error('tanggal_mulai') is-invalid @enderror" value="{{ old('tanggal_mulai', date('Y-m-d')) }}" max="{{ now()->toDateString() }}" required>
                                 @error('tanggal_mulai')
                                     <div class="invalid-feedback small">{{ $message }}</div>
                                 @enderror

@@ -5,7 +5,7 @@ namespace App\Exports;
 use App\Models\Pemeliharaan;
 use App\Models\Barang;
 use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -17,7 +17,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-class PemeliharaanExport implements FromQuery, ShouldAutoSize, WithStyles, WithColumnFormatting, WithHeadings, WithMapping, WithEvents
+class PemeliharaanExport implements FromQuery, WithColumnWidths, WithStyles, WithColumnFormatting, WithHeadings, WithMapping, WithEvents
 {
     protected $barangId;
     protected $search;
@@ -104,10 +104,22 @@ class PemeliharaanExport implements FromQuery, ShouldAutoSize, WithStyles, WithC
         ];
     }
 
+    public function columnWidths(): array
+    {
+        return [
+            'A' => 13,
+            'B' => 15,
+            'C' => 15,
+            'D' => 30,
+            'E' => 18,
+            'F' => 22,
+            'G' => 18,
+            'H' => 22,
+        ];
+    }
+
     public function styles(Worksheet $sheet)
     {
-        $sheet->mergeCells('A1:H1');
-        $sheet->mergeCells('A2:H2');
         
         $headerRow = $this->barang ? 9 : 4;
 
@@ -115,7 +127,7 @@ class PemeliharaanExport implements FromQuery, ShouldAutoSize, WithStyles, WithC
             1 => ['font' => ['bold' => true, 'size' => 14], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]],
             2 => ['font' => ['bold' => true, 'size' => 12], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]],
             $headerRow => [
-                'font' => ['bold' => true], 
+                'font' => ['bold' => true],
                 'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['rgb' => 'F2F2F2']],
                 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
             ],
@@ -129,6 +141,20 @@ class PemeliharaanExport implements FromQuery, ShouldAutoSize, WithStyles, WithC
                 $lastRow = $event->sheet->getHighestRow();
                 $headerRow = $this->barang ? 9 : 4;
                 $startDataRow = $headerRow + 1;
+
+                // Merge cells for titles, details, and summary
+                $event->sheet->getDelegate()->mergeCells('A1:H1');
+                $event->sheet->getDelegate()->mergeCells('A2:H2');
+                if ($this->barang) {
+                    $event->sheet->getDelegate()->mergeCells('B4:H4');
+                    $event->sheet->getDelegate()->mergeCells('B5:H5');
+                    $event->sheet->getDelegate()->mergeCells('B6:H6');
+                    $event->sheet->getDelegate()->mergeCells('B7:H7');
+                }
+                $event->sheet->getDelegate()->mergeCells('F' . ($lastRow + 2) . ':G' . ($lastRow + 2));
+                $event->sheet->getDelegate()->mergeCells('F' . ($lastRow + 3) . ':G' . ($lastRow + 3));
+                $event->sheet->getDelegate()->mergeCells('F' . ($lastRow + 4) . ':G' . ($lastRow + 4));
+                
                 
                 // Border untuk seluruh tabel
                 $event->sheet->getStyle('A' . $headerRow . ':H' . $lastRow)->applyFromArray([

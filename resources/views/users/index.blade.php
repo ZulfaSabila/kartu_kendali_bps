@@ -55,7 +55,14 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                <div class="d-flex justify-content-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <form action="{{ route('users.reset-password', $staff->id) }}" method="POST">
+                                        @csrf @method('PATCH')
+                                        <button type="submit" class="btn btn-sm btn-outline-warning px-3 py-1" style="font-size: 0.8rem;" onclick="return confirm('Reset password pegawai ini ke default?')">
+                                            <i class="bi bi-key"></i> Reset
+                                        </button>
+                                    </form>
+
                                     <form action="{{ route('users.toggle-active', $staff->id) }}" method="POST">
                                         @csrf @method('PATCH')
                                         @if($staff->is_active)
