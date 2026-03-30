@@ -62,7 +62,11 @@
                 <nav aria-label="breadcrumb" class="mb-1">
                     <ol class="breadcrumb mb-0" style="font-size: 0.75rem;">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none" style="color: #6b7280;">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('barangs.index') }}" class="text-decoration-none" style="color: #6b7280;">Inventaris</a></li>
+                        @if($selectedBarang)
+                            <li class="breadcrumb-item"><a href="{{ route('barangs.index', ['kategori_id' => $selectedBarang->kategori_id]) }}" class="text-decoration-none" style="color: #6b7280;">{{ $selectedBarang->kategori->nama_kategori }}</a></li>
+                        @else
+                            <li class="breadcrumb-item"><a href="{{ route('barangs.index') }}" class="text-decoration-none" style="color: #6b7280;">Inventaris</a></li>
+                        @endif
                         <li class="breadcrumb-item active" aria-current="page" style="color: #003366;">Riwayat Pemeliharaan</li>
                     </ol>
                 </nav>
@@ -163,7 +167,8 @@
                 <tbody>
                     @forelse($pemeliharaans as $index => $item)
                     @php
-                        $pagu_anggaran = $item->pagu ?? $item->barang->pagu_anggaran;
+                        // Gunakan pagu dari baris riwayat masing-masing
+                        $pagu_anggaran = $item->pagu;
                         $sisaAnggaran = $pagu_anggaran - $item->biaya_kumulatif_dinamis;
                     @endphp
                     <tr>

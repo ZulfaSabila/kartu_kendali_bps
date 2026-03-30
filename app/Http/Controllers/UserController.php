@@ -55,16 +55,27 @@ class UserController extends Controller
     }
 
     /**
-     * Reset the user password to default.
+     * Update the user's information.
      */
-    public function resetPassword(User $user)
+    public function update(Request $request, User $user)
     {
-        $defaultPassword = config('app.default_user_password', env('DEFAULT_USER_PASSWORD', 'BPS@Bontang2026!'));
-        
-        $user->update([
-            'password' => Hash::make($defaultPassword)
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'password' => ['nullable', 'min:8'],
         ]);
 
-        return back()->with('success', "Password pegawai {$user->name} berhasil di-reset ke default.");
+        $data = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($validated['password']);
+        }
+
+        $user->update($data);
+
+        return back()->with('success', "Data pegawai {$user->name} berhasil diperbarui.");
     }
 }

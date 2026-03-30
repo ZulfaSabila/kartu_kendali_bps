@@ -3,7 +3,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0" style="font-size: 0.75rem;">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none" style="color: #6b7280;">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('pemeliharaans.index') }}" class="text-decoration-none" style="color: #6b7280;">Riwayat</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('pemeliharaans.index', ['barang_id' => request('barang_id')]) }}" class="text-decoration-none" style="color: #6b7280;">Riwayat</a></li>
                 <li class="breadcrumb-item active" aria-current="page" style="color: #003366;">Tambah Riwayat</li>
             </ol>
         </nav>
@@ -13,12 +13,7 @@
         <div class="col-lg-10">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="fw-bold mb-0" style="color: #003366;">Form Input Pemeliharaan</h6>
-                        <a href="{{ route('pemeliharaans.index') }}" class="btn-bps btn-bps-outline px-3 py-1">
-                            <i class="bi bi-arrow-left"></i> Kembali
-                        </a>
-                    </div>
+                    <h6 class="fw-bold mb-0" style="color: #003366;">Form Input Pemeliharaan</h6>
                 </div>
                 <div class="card-body p-4">
                     <form action="{{ route('pemeliharaans.store') }}" method="POST">
@@ -102,14 +97,14 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold" style="color: #003366;">Tanggal Selesai</label>
-                                <input type="date" name="tanggal_selesai" class="form-control @error('tanggal_selesai') is-invalid @enderror" value="{{ old('tanggal_selesai', date('Y-m-d')) }}">
+                                <input type="date" name="tanggal_selesai" class="form-control @error('tanggal_selesai') is-invalid @enderror" value="{{ old('tanggal_selesai', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}">
                                 @error('tanggal_selesai')
                                     <div class="invalid-feedback small">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-12">
                                 <label class="form-label small fw-bold" style="color: #003366;">Rincian Perbaikan / Pemeliharaan</label>
-                                <textarea name="rincian_pekerjaan" class="form-control @error('rincian_pekerjaan') is-invalid @enderror" rows="3" placeholder="Jelaskan detail perbaikan yang dilakukan..." required>{{ old('rincian_pekerjaan') }}</textarea>
+                                <textarea name="rincian_pekerjaan" class="form-control @error('rincian_pekerjaan') is-invalid @enderror" rows="4" placeholder="Jelaskan rincian pekerjaan pemeliharaan yang dilakukan secara mendetail..." required>{{ old('rincian_pekerjaan') }}</textarea>
                                 @error('rincian_pekerjaan')
                                     <div class="invalid-feedback small">{{ $message }}</div>
                                 @enderror
@@ -146,7 +141,7 @@
                         </div>
 
                         <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-                            <a href="{{ route('pemeliharaans.index') }}" class="btn-bps btn-bps-outline px-4 py-2">
+                            <a href="{{ route('pemeliharaans.index', ['barang_id' => request('barang_id')]) }}" class="btn-bps btn-bps-outline px-4 py-2">
                                 Batal
                             </a>
                             <button type="submit" class="btn-bps btn-bps-primary px-4 py-2">

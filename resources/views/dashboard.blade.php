@@ -29,13 +29,44 @@
             </div>
             <div class="col-md-6 text-md-end mt-2 mt-md-0 d-flex justify-content-md-end gap-2">
                 @if(auth()->user()->isAdmin())
-                <a href="{{ route('kategoris.create') }}" class="btn-bps btn-bps-primary">
+                <button type="button" class="btn-bps btn-bps-primary" data-bs-toggle="modal" data-bs-target="#addKategoriModal">
                     <i class="bi bi-plus-lg"></i> Tambah Kategori
-                </a>
+                </button>
                 @endif
             </div>
         </div>
     </x-slot>
+
+    <!-- Add Kategori Modal -->
+    @if(auth()->user()->isAdmin())
+    <div class="modal fade" id="addKategoriModal" tabindex="-1" aria-labelledby="addKategoriModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="addKategoriModalLabel" style="color: #003366;">Tambah Kategori Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('kategoris.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold" style="color: #003366;">NAMA KATEGORI</label>
+                            <input type="text" name="nama_kategori" class="form-control rounded-2 shadow-none border-light-subtle" placeholder="Contoh: Alat Angkutan Darat Bermotor" required>
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label small fw-bold" style="color: #003366;">DESKRIPSI KATEGORI (OPSIONAL)</label>
+                            <textarea name="deskripsi" class="form-control rounded-2 shadow-none border-light-subtle" rows="3" placeholder="Masukkan deskripsi singkat kategori ini..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light border-0">
+                        <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn-bps btn-bps-primary px-4 py-2">Simpan Kategori</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- Statistics Cards -->
     <div class="row g-3 mt-1">
@@ -133,9 +164,9 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="font-size: 0.85rem;">
                             <li>
-                                <a class="dropdown-item py-1" href="{{ route('kategoris.edit', $kategori->id) }}">
+                                <button type="button" class="dropdown-item py-1" data-bs-toggle="modal" data-bs-target="#editKategoriModal-{{ $kategori->id }}">
                                     <i class="bi bi-pencil me-2 text-warning"></i> Edit
-                                </a>
+                                </button>
                             </li>
                             <li><hr class="dropdown-divider my-1"></li>
                             <li>
@@ -150,6 +181,36 @@
                         </ul>
                     </div>
                     @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Kategori Modal -->
+        <div class="modal fade" id="editKategoriModal-{{ $kategori->id }}" tabindex="-1" aria-labelledby="editKategoriModalLabel-{{ $kategori->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header bg-light">
+                        <h5 class="modal-title fw-bold" id="editKategoriModalLabel-{{ $kategori->id }}" style="color: #003366;">Edit Kategori</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('kategoris.update', $kategori->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body p-4 text-start">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold" style="color: #003366;">NAMA KATEGORI</label>
+                                <input type="text" name="nama_kategori" class="form-control rounded-2 shadow-none border-light-subtle" value="{{ $kategori->nama_kategori }}" required>
+                            </div>
+                            <div class="mb-0">
+                                <label class="form-label small fw-bold" style="color: #003366;">DESKRIPSI KATEGORI (OPSIONAL)</label>
+                                <textarea name="deskripsi" class="form-control rounded-2 shadow-none border-light-subtle" rows="3">{{ $kategori->deskripsi }}</textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-light border-0">
+                            <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn-bps btn-bps-primary px-4 py-2">Simpan Perubahan</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

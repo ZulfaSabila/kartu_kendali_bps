@@ -81,7 +81,7 @@ class PemeliharaanController extends Controller
             'kategori_id' => 'required|exists:kategoris,id',
             'barang_id' => 'required|exists:barangs,id',
             'tanggal_mulai' => 'required|date|before_or_equal:today',
-            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai|before_or_equal:today',
             'rincian_pekerjaan' => 'nullable|string',
             'biaya' => 'required|numeric|min:0',
             'pagu' => 'required|numeric|min:0',
@@ -111,7 +111,7 @@ class PemeliharaanController extends Controller
     {
         $validated = $request->validate([
             'tanggal_mulai' => 'required|date|before_or_equal:today',
-            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai|before_or_equal:today',
             'rincian_pekerjaan' => 'nullable|string',
             'biaya' => 'required|numeric|min:0',
             'pagu' => 'required|numeric|min:0',
@@ -133,7 +133,7 @@ class PemeliharaanController extends Controller
     {
         $records = Pemeliharaan::where('barang_id', $barangId)
             ->orderBy('tanggal_mulai', 'asc')
-            ->orderBy('created_at', 'asc')
+            ->orderBy('id', 'asc')
             ->get();
 
         $runningTotal = 0;

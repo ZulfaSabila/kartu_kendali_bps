@@ -78,7 +78,8 @@ class PemeliharaanExport implements FromQuery, WithColumnWidths, WithStyles, Wit
     public function map($p): array
     {
         $this->rowNumber++;
-        $currentPagu = $p->pagu ?? ($p->barang->pagu_anggaran ?? 0);
+        // Gunakan pagu dari baris riwayat masing-masing
+        $currentPagu = $p->pagu;
         $sisaAnggaran = $currentPagu - $p->biaya_kumulatif_dinamis;
 
         return [

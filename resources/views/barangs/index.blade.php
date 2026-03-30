@@ -143,22 +143,112 @@
                 <nav aria-label="breadcrumb" class="mb-1">
                     <ol class="breadcrumb mb-0" style="font-size: 0.75rem;">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none" style="color: #6b7280;">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page" style="color: #003366;">Inventaris Barang</li>
+                        @if(request('kategori_id') && $barangs->isNotEmpty() && $barangs->first()->kategori)
+                            <li class="breadcrumb-item active" aria-current="page" style="color: #003366;">{{ $barangs->first()->kategori->nama_kategori }}</li>
+                        @else
+                            <li class="breadcrumb-item active" aria-current="page" style="color: #003366;">Inventaris Barang</li>
+                        @endif
                     </ol>
                 </nav>
                 <h1 class="page-title" style="color: #003366;">Inventaris Barang</h1>
             </div>
             <div class="col-md-6 text-md-end mt-2 mt-md-0">
                 @if(auth()->user()->isAdmin())
-                <a href="{{ route('barangs.create', ['kategori_id' => request('kategori_id')]) }}" class="btn-bps btn-bps-primary px-4 py-2">
-                    <i class="bi bi-plus-lg"></i> Tambah Barang
+                <a href="{{ route('barangs.trashed') }}" class="btn-bps btn-bps-outline px-4 py-2 me-2">
+                    <i class="bi bi-archive"></i> Arsip Terhapus
                 </a>
+                <button type="button" class="btn-bps btn-bps-primary px-4 py-2" data-bs-toggle="modal" data-bs-target="#addBarangModal">
+                    <i class="bi bi-plus-lg"></i> Tambah Barang
+                </button>
                 @endif
             </div>
         </div>
     </x-slot>
 
+    <!-- Add Barang Modal -->
+    <div class="modal fade" id="addBarangModal" tabindex="-1" aria-labelledby="addBarangModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="addBarangModalLabel" style="color: #003366;">Tambah Barang Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('barangs.store') }}" method="POST">
+                    @csrf
+                    @if(request('kategori_id'))
+                        <input type="hidden" name="kategori_id" value="{{ request('kategori_id') }}">
+                    @endif
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            @if(!request('kategori_id'))
+                            <div class="col-12">
+                                <label class="form-label small fw-bold" style="color: #003366;">KATEGORI BMN</label>
+                                <select name="kategori_id" class="form-select rounded-2 shadow-none border-light-subtle" required>
+                                    <option value="" disabled selected>Pilih Kategori...</option>
+                                    @foreach($kategoris as $kategori)
+                                        <option value="{{ $kategori->id }}">{{ $kategori->nama_kategori }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @endif
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold" style="color: #003366;">NUP BMN</label>
+                                <input type="text" name="nup_bmn" class="form-control rounded-2 shadow-none border-light-subtle" placeholder="Contoh: 2" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold" style="color: #003366;">NAMA BARANG</label>
+                                <input type="text" name="nama_barang" class="form-control rounded-2 shadow-none border-light-subtle" placeholder="Contoh: STATION WAGON" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold" style="color: #003366;">MERK / TIPE</label>
+                                <input type="text" name="merk_type" class="form-control rounded-2 shadow-none border-light-subtle" placeholder="Contoh: TOYOTA INNOVA KT 1338 Q">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold" style="color: #003366;">LOKASI PENEMPATAN</label>
+                                <input type="text" name="lokasi" class="form-control rounded-2 shadow-none border-light-subtle" placeholder="Contoh: Bontang" value="Bontang">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold" style="color: #003366;">PAGU ANGGARAN (RP)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light fw-bold" style="color: #003366;">Rp</span>
+                                    <input type="text" class="form-control rounded-end-2 shadow-none border-light-subtle pagu-mask" placeholder="0" required>
+                                    <input type="hidden" name="pagu_anggaran" class="pagu-real" value="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light border-0">
+                        <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn-bps btn-bps-primary px-4 py-2">Simpan Barang</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Search Section -->
+    <div class="mt-2">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-3" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <div>{{ session('success') }}</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-3" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div>{{ session('error') }}</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+    </div>
+
     <div class="card-bps p-2 mb-2 mt-2">
         <form action="{{ route('barangs.index') }}" method="GET">
             @if(request('kategori_id'))
@@ -234,9 +324,9 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="font-size: 0.85rem;">
                             <li>
-                                <a class="dropdown-item py-1" href="{{ route('barangs.edit', $barang->id) }}">
+                                <button type="button" class="dropdown-item py-1" data-bs-toggle="modal" data-bs-target="#editBarangModal-{{ $barang->id }}">
                                     <i class="bi bi-pencil me-2 text-warning"></i> Edit
-                                </a>
+                                </button>
                             </li>
                             <li><hr class="dropdown-divider my-1"></li>
                             <li>
@@ -254,6 +344,55 @@
                 </div>
             </div>
         </div>
+
+        <!-- Edit Barang Modal -->
+        <div class="modal fade" id="editBarangModal-{{ $barang->id }}" tabindex="-1" aria-labelledby="editBarangModalLabel-{{ $barang->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header bg-light">
+                        <h5 class="modal-title fw-bold" id="editBarangModalLabel-{{ $barang->id }}" style="color: #003366;">Edit Data Barang</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('barangs.update', $barang->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="kategori_id" value="{{ $barang->kategori_id }}">
+                        <div class="modal-body p-4 text-start">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold" style="color: #003366;">NUP BMN</label>
+                                    <input type="text" name="nup_bmn" class="form-control rounded-2 shadow-none border-light-subtle" value="{{ $barang->nup_bmn }}" placeholder="Contoh: 2" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold" style="color: #003366;">NAMA BARANG</label>
+                                    <input type="text" name="nama_barang" class="form-control rounded-2 shadow-none border-light-subtle" value="{{ $barang->nama_barang }}" placeholder="Contoh: STATION WAGON" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold" style="color: #003366;">MERK / TIPE</label>
+                                    <input type="text" name="merk_type" class="form-control rounded-2 shadow-none border-light-subtle" value="{{ $barang->merk_type }}" placeholder="Contoh: TOYOTA INNOVA KT 1338 Q">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold" style="color: #003366;">LOKASI PENEMPATAN</label>
+                                    <input type="text" name="lokasi" class="form-control rounded-2 shadow-none border-light-subtle" value="{{ $barang->lokasi }}" placeholder="Contoh: Bontang">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold" style="color: #003366;">PAGU ANGGARAN (RP)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light fw-bold" style="color: #003366;">Rp</span>
+                                        <input type="text" class="form-control rounded-end-2 shadow-none border-light-subtle pagu-mask" value="{{ number_format($barang->pagu_anggaran, 0, ',', '.') }}" placeholder="0" required>
+                                        <input type="hidden" name="pagu_anggaran" class="pagu-real" value="{{ $barang->pagu_anggaran }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-light border-0">
+                            <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn-bps btn-bps-primary px-4 py-2">Simpan Perubahan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         @empty
         <div class="col-12 text-center py-4">
             <i class="bi bi-inbox fs-2 text-muted opacity-25"></i>
@@ -267,4 +406,24 @@
         {{ $barangs->appends(request()->all())->links('pagination::bootstrap-5') }}
     </div>
     @endif
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paguMasks = document.querySelectorAll('.pagu-mask');
+            
+            paguMasks.forEach(mask => {
+                const realInput = mask.nextElementSibling;
+                
+                mask.addEventListener('input', function(e) {
+                    let value = this.value.replace(/[^0-9]/g, '');
+                    if (value === '') value = '0';
+                    
+                    realInput.value = value;
+                    this.value = new Intl.NumberFormat('id-ID').format(value);
+                });
+            });
+        });
+    </script>
+    @endpush
 </x-app-layout>

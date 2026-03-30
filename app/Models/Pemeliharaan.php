@@ -52,7 +52,8 @@ class Pemeliharaan extends Model
     {
         return $this->barang->pemeliharaans()
             ->where('tanggal_mulai', '<=', $this->tanggal_mulai)
-            ->orderBy('tanggal_mulai')
+            ->orderBy('tanggal_mulai', 'asc')
+            ->orderBy('id', 'asc')
             ->sum('biaya');
     }
 }

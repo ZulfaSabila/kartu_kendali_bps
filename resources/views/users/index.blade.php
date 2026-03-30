@@ -56,12 +56,9 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2">
-                                    <form action="{{ route('users.reset-password', $staff->id) }}" method="POST">
-                                        @csrf @method('PATCH')
-                                        <button type="submit" class="btn btn-sm btn-outline-warning px-3 py-1" style="font-size: 0.8rem;" onclick="return confirm('Reset password pegawai ini ke default?')">
-                                            <i class="bi bi-key"></i> Reset
-                                        </button>
-                                    </form>
+                                    <button type="button" class="btn btn-sm btn-outline-primary px-3 py-1" style="font-size: 0.8rem;" data-bs-toggle="modal" data-bs-target="#editStaffModal-{{ $staff->id }}">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </button>
 
                                     <form action="{{ route('users.toggle-active', $staff->id) }}" method="POST">
                                         @csrf @method('PATCH')
@@ -78,6 +75,45 @@
                                 </div>
                             </td>
                         </tr>
+
+                        <!-- Edit Staff Modal -->
+                        <div class="modal fade" id="editStaffModal-{{ $staff->id }}" tabindex="-1" aria-labelledby="editStaffModalLabel-{{ $staff->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow">
+                                    <div class="modal-header bg-light">
+                                        <h5 class="modal-title fw-bold" id="editStaffModalLabel-{{ $staff->id }}">Edit Data Pegawai</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ route('users.update', $staff->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <div class="modal-body p-4">
+                                            <div class="mb-3">
+                                                <label for="name-{{ $staff->id }}" class="form-label small fw-bold" style="color: #003366;">NAMA LENGKAP</label>
+                                                <input type="text" name="name" id="name-{{ $staff->id }}" class="form-control rounded-2 shadow-none border-light-subtle" value="{{ $staff->name }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="email-{{ $staff->id }}" class="form-label small fw-bold" style="color: #003366;">EMAIL INSTANSI</label>
+                                                <input type="email" name="email" id="email-{{ $staff->id }}" class="form-control rounded-2 shadow-none border-light-subtle" value="{{ $staff->email }}" required>
+                                            </div>
+                                            <div class="mb-0">
+                                                <label for="password-{{ $staff->id }}" class="form-label small fw-bold" style="color: #003366;">PASSWORD BARU (Kosongkan jika tidak ingin mengubah)</label>
+                                                <div class="input-group">
+                                                    <input type="password" name="password" id="password-{{ $staff->id }}" class="form-control shadow-none border-light-subtle" placeholder="Minimal 8 karakter" minlength="8">
+                                                    <button class="btn btn-outline-secondary border-light-subtle toggle-password" type="button" data-target="password-{{ $staff->id }}">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer bg-light border-0">
+                                            <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit" class="btn-bps btn-bps-primary px-4 py-2">Simpan Perubahan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                         @endforeach
                     </tbody>
                 </table>
@@ -106,7 +142,12 @@
                         </div>
                         <div class="mb-0">
                             <label for="password" class="form-label small fw-bold" style="color: #003366;">PASSWORD</label>
-                            <input type="password" name="password" id="password" class="form-control rounded-2 shadow-none border-light-subtle" placeholder="Minimal 8 karakter" required minlength="8">
+                            <div class="input-group">
+                                <input type="password" name="password" id="password" class="form-control shadow-none border-light-subtle" placeholder="Minimal 8 karakter" required minlength="8">
+                                <button class="btn btn-outline-secondary border-light-subtle toggle-password" type="button" data-target="password">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer bg-light border-0">
@@ -117,4 +158,30 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButtons = document.querySelectorAll('.toggle-password');
+            
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const passwordInput = document.getElementById(targetId);
+                    const icon = this.querySelector('i');
+                    
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        icon.classList.remove('bi-eye');
+                        icon.classList.add('bi-eye-slash');
+                    } else {
+                        passwordInput.type = 'password';
+                        icon.classList.remove('bi-eye-slash');
+                        icon.classList.add('bi-eye');
+                    }
+                });
+            });
+        });
+    </script>
+    @endpush
 </x-app-layout>

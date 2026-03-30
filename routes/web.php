@@ -21,6 +21,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('kategoris', KategoriController::class)->except(['index', 'show']);
         
         // Barang Admin
+        Route::get('barangs/trashed', [BarangController::class, 'trashed'])->name('barangs.trashed');
+        Route::patch('barangs/{id}/restore', [BarangController::class, 'restore'])->name('barangs.restore');
+        Route::delete('barangs/{id}/force-delete', [BarangController::class, 'forceDelete'])->name('barangs.force-delete');
         Route::resource('barangs', BarangController::class)->except(['index', 'show']);
         
         // Pemeliharaan Admin
@@ -31,8 +34,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // User Management Admin
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle-active');
-        Route::patch('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
     });
 
     // Kategori Routes

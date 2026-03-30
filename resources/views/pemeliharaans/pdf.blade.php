@@ -65,9 +65,9 @@
         $items = $groupedData[$barang->id] ?? collect([]);
         $totalBiaya = $items->sum('biaya');
         
-        // Sisa anggaran dihitung dari PAGU transaksi terakhir (terbaru)
+        // Ambil pagu dari transaksi terbaru untuk ringkasan
         $latestItem = $items->sortByDesc('tanggal_mulai')->sortByDesc('id')->first();
-        $activePagu = $latestItem && $latestItem->pagu ? $latestItem->pagu : ($barang->pagu_anggaran ?? 0);
+        $activePagu = $latestItem ? $latestItem->pagu : ($barang->pagu_anggaran ?? 0);
         $sisaAnggaranTotal = $activePagu - $totalBiaya;
     @endphp
 
@@ -135,7 +135,8 @@
             @else
                 @foreach($items as $index => $p)
                         @php
-                            $currentPagu = $p->pagu ?? $totalPagu;
+                            // Gunakan pagu dari baris riwayat masing-masing
+                            $currentPagu = $p->pagu;
                             $sisaAnggaran = $currentPagu - $p->biaya_kumulatif_dinamis;
                         @endphp
                         <tr>

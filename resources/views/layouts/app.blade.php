@@ -198,15 +198,41 @@
 
         /* ── Badges ── */
         .badge-bps {
-            padding: 0.25rem 0.6rem;
+            padding: 0.35rem 0.65rem;
             border-radius: 6px;
-            font-weight: 600;
             font-size: 0.7rem;
+            font-weight: 700;
         }
 
         .badge-bps-blue { background-color: rgba(0, 51, 102, 0.1); color: var(--bps-blue); }
         .badge-bps-green { background-color: rgba(119, 176, 42, 0.1); color: var(--bps-green); }
         .badge-bps-orange { background-color: rgba(232, 117, 26, 0.1); color: var(--bps-orange); }
+
+        /* ── Loading Spinner ── */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+            pointer-events: none;
+        }
+
+        .btn-loading::after {
+            content: "";
+            position: absolute;
+            width: 1rem;
+            height: 1rem;
+            top: 50%;
+            left: 50%;
+            margin-top: -0.5rem;
+            margin-left: -0.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
 
         /* ── Footer ── */
         footer {
@@ -262,5 +288,24 @@
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('submit', function(e) {
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            
+            if (submitBtn && (submitBtn.classList.contains('btn-bps-primary') || submitBtn.classList.contains('btn-bps-orange'))) {
+                submitBtn.classList.add('btn-loading');
+                // Prevent double submission
+                if (submitBtn.dataset.submitted) {
+                    e.preventDefault();
+                    return;
+                }
+                submitBtn.dataset.submitted = "true";
+            }
+        });
+    </script>
+    
+    @stack('scripts')
 </body>
 </html>

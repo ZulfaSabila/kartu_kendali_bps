@@ -34,8 +34,9 @@ class BarangController extends Controller
         }
 
         $barangs = $query->latest()->paginate(15);
+        $kategoris = Kategori::all();
         
-        return view('barangs.index', compact('barangs'));
+        return view('barangs.index', compact('barangs', 'kategoris'));
     }
 
     /**
@@ -43,13 +44,7 @@ class BarangController extends Controller
      */
     public function create(Request $request)
     {
-        // Mengambil semua kategori untuk dropdown
-        $kategoris = Kategori::all();
-        
-        // Menangkap kategori_id dari parameter URL agar otomatis terpilih di form
-        $selectedKategori = $request->query('kategori_id');
-        
-        return view('barangs.create', compact('kategoris', 'selectedKategori'));
+        return redirect()->route('barangs.index', ['kategori_id' => $request->kategori_id]);
     }
 
     /**
@@ -81,8 +76,7 @@ class BarangController extends Controller
 
     public function edit(Barang $barang)
     {
-        $kategoris = Kategori::all();
-        return view('barangs.edit', compact('barang', 'kategoris'));
+        return redirect()->route('barangs.index', ['kategori_id' => $barang->kategori_id]);
     }
 
     public function update(Request $request, Barang $barang)
@@ -98,17 +92,27 @@ class BarangController extends Controller
 
         $barang->update($validated);
 
+        // SINKRONISASI MASAL: Mengubah pagu di Inventaris akan mengubah seluruh riwayat
+        $barang->pemeliharaans()->update(['pagu' => $barang->pagu_anggaran]);
+
         return redirect()->route('barangs.index', ['kategori_id' => $request->kategori_id])
-            ->with('success', 'Data barang berhasil diperbarui!');
+            ->with('success', 'Data barang dan seluruh riwayat pagu berhasil diperbarui!');
     }
 
     public function destroy(Barang $barang)
     {
-        $kategori_id = $barang->kategori_id;
-        $barang->delete();
-
-        return redirect()->route('barangs.index', ['kategori_id' => $kategori_id])
-            ->with('success', 'Data barang berhasil dihapus!');
+        try {
+            $barang->delete();
+            return redirect()->route('barangs.index')
+                ->with('success', 'Barang berhasil dihapus.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() === '23000') {
+                return redirect()->back()
+                    ->with('error', 'Barang tidak dapat dihapus karena masih memiliki riwayat pemeliharaan. Hapus semua riwayat pemeliharaan terlebih dahulu.');
+            }
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat menghapus barang. Silakan coba lagi.');
+        }
     }
 
     /**
@@ -123,5 +127,57 @@ class BarangController extends Controller
             ->get(['id', 'nama_barang', 'nup_bmn']);
 
         return response()->json($barangs);
+    }
+
+    /**
+     * Display a listing of soft-deleted barangs.
+     */
+    public function trashed(Request $request)
+    {
+        $query = Barang::onlyTrashed()
+            ->with('kategori')
+            ->whereHas('kategori', function($q) {
+                $q->whereNull('deleted_at');
+            });
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nup_bmn', 'like', "%{$search}%")
+                  ->orWhere('nama_barang', 'like', "%{$search}%")
+                  ->orWhere('merk_type', 'like', "%{$search}%");
+            });
+        }
+
+        $barangs = $query->latest()->paginate(15);
+        
+        return view('barangs.trashed', compact('barangs'));
+    }
+
+    /**
+     * Restore a soft-deleted barang.
+     */
+    public function restore($id)
+    {
+        $barang = Barang::onlyTrashed()->findOrFail($id);
+        $barang->restore();
+
+        return redirect()->route('barangs.index')
+            ->with('success', 'Data barang berhasil dipulihkan.');
+    }
+
+    /**
+     * Permanently delete a soft-deleted barang.
+     */
+    public function forceDelete($id)
+    {
+        $barang = Barang::onlyTrashed()->findOrFail($id);
+        
+        // Hapus juga riwayat pemeliharaannya secara permanen
+        $barang->pemeliharaans()->forceDelete();
+        $barang->forceDelete();
+
+        return redirect()->route('barangs.trashed')
+            ->with('success', 'Data barang dan riwayat pemeliharaannya telah dihapus secara permanen.');
     }
 }

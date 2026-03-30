@@ -15,7 +15,7 @@ class KategoriController extends Controller
 
     public function create()
     {
-        return view('kategoris.create');
+        return redirect()->route('kategoris.index');
     }
 
     public function store(Request $request)
@@ -42,7 +42,7 @@ class KategoriController extends Controller
 
     public function edit(Kategori $kategori)
     {
-        return view('kategoris.edit', compact('kategori'));
+        return redirect()->route('dashboard');
     }
 
     public function update(Request $request, Kategori $kategori)
