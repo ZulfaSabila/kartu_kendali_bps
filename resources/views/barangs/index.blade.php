@@ -154,7 +154,7 @@
             </div>
             <div class="col-md-6 text-md-end mt-2 mt-md-0">
                 @if(auth()->user()->isAdmin())
-                <a href="{{ route('barangs.trashed') }}" class="btn-bps btn-bps-outline px-4 py-2 me-2">
+                <a href="{{ route('barangs.trashed') }}" class="btn-bps btn-bps-outline px-4 py-2 me-2 text-decoration-none">
                     <i class="bi bi-archive"></i> Arsip Terhapus
                 </a>
                 <button type="button" class="btn-bps btn-bps-primary px-4 py-2" data-bs-toggle="modal" data-bs-target="#addBarangModal">

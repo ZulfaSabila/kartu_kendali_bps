@@ -18,18 +18,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Admin Only Routes
     Route::middleware('admin')->group(function () {
         // Kategori Admin
-        Route::resource('kategoris', KategoriController::class)->except(['index', 'show']);
+        Route::get('kategoris/trashed', [KategoriController::class, 'trashed'])->name('kategoris.trashed');
+        Route::patch('kategoris/{id}/restore', [KategoriController::class, 'restore'])->name('kategoris.restore');
+        Route::delete('kategoris/{id}/force-delete', [KategoriController::class, 'forceDelete'])->name('kategoris.force-delete');
+        Route::resource('kategoris', KategoriController::class)->only(['store', 'update', 'destroy']);
         
         // Barang Admin
         Route::get('barangs/trashed', [BarangController::class, 'trashed'])->name('barangs.trashed');
         Route::patch('barangs/{id}/restore', [BarangController::class, 'restore'])->name('barangs.restore');
         Route::delete('barangs/{id}/force-delete', [BarangController::class, 'forceDelete'])->name('barangs.force-delete');
-        Route::resource('barangs', BarangController::class)->except(['index', 'show']);
+        Route::resource('barangs', BarangController::class)->only(['store', 'update', 'destroy']);
         
         // Pemeliharaan Admin
-        Route::resource('pemeliharaans', PemeliharaanController::class)->except(['index', 'show']);
-        Route::get('pemeliharaans/export/pdf', [PemeliharaanController::class, 'exportPdf'])->name('pemeliharaans.export.pdf');
-        Route::get('pemeliharaans/export/excel', [PemeliharaanController::class, 'exportExcel'])->name('pemeliharaans.export.excel');
+        Route::resource('pemeliharaans', PemeliharaanController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+        Route::get('pemeliharaans/export/pdf', [PemeliharaanController::class, 'exportPdf'])->name('pemeliharaans.export-pdf');
+        Route::get('pemeliharaans/export/excel', [PemeliharaanController::class, 'exportExcel'])->name('pemeliharaans.export-excel');
 
         // User Management Admin
         Route::get('/users', [UserController::class, 'index'])->name('users.index');

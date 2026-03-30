@@ -134,7 +134,7 @@
                         <h5 class="asset-name text-muted">{{ $barang->nama_barang }}</h5>
                         <span class="badge-nup">NUP: {{ $barang->nup_bmn ?? '-' }}</span>
                         <div class="small text-muted mt-1" style="font-size: 0.7rem;">
-                            Dihapus pada: {{ $barang->deleted_at->format('d/m/Y H:i') }}
+                            Dihapus pada: {{ $barang->deleted_at->format('d/m/Y') }}
                         </div>
                     </div>
                 </div>

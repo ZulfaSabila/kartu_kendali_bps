@@ -1,21 +1,52 @@
 <x-app-layout>
     <x-slot name="header">
         <style>
+            .stat-card-modern {
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                border: none;
+                padding: 14px 18px;
+                transition: all 0.2s ease;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                height: 100%;
+                text-decoration: none !important;
+            }
+            .stat-card-modern:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            }
+            .stat-card-modern .card-label {
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                color: #6b7280;
+                font-weight: 700;
+            }
+            .stat-card-modern .card-value {
+                font-size: 22px;
+                font-weight: 700;
+                color: #1a1a2e;
+                margin: 2px 0;
+                line-height: 1.2;
+            }
+            .stat-card-modern .card-subtitle {
+                font-size: 11px;
+                color: #9ca3af;
+            }
+            .border-bps-blue { border-left: 4px solid #003366 !important; }
+            .border-bps-green { border-left: 4px solid #00A651 !important; }
+            .border-bps-orange { border-left: 4px solid #F5A623 !important; }
+
             @media (max-width: 576px) { 
-                .stat-card .display-4, 
-                .stat-card h2, 
-                .stat-card .fs-1,
-                .stat-card .h5,
-                .stat-card .h6 { 
-                    font-size: 1.8rem !important; 
-                } 
-                .stat-card .icon, 
-                .stat-card i { 
-                    font-size: 1.5rem !important; 
-                } 
-                .stat-card { 
+                .stat-card-modern { 
                     padding: 16px !important; 
                 } 
+                .stat-card-modern .card-value {
+                    font-size: 24px !important;
+                }
             }
         </style>
         <div class="row align-items-center">
@@ -29,6 +60,9 @@
             </div>
             <div class="col-md-6 text-md-end mt-2 mt-md-0 d-flex justify-content-md-end gap-2">
                 @if(auth()->user()->isAdmin())
+                <a href="{{ route('kategoris.trashed') }}" class="btn-bps btn-bps-outline px-4 py-2 text-decoration-none">
+                    <i class="bi bi-archive"></i> Arsip Terhapus
+                </a>
                 <button type="button" class="btn-bps btn-bps-primary" data-bs-toggle="modal" data-bs-target="#addKategoriModal">
                     <i class="bi bi-plus-lg"></i> Tambah Kategori
                 </button>
@@ -72,58 +106,57 @@
     <div class="row g-3 mt-1">
         <!-- Card 1: Total Kategori -->
         <div class="col-md-4">
-            <div class="card-bps stat-card p-3 h-100">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-primary bg-opacity-10 p-2 text-primary">
-                        <i class="bi bi-grid-fill fs-5"></i>
-                    </div>
-                    <div>
-                        <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Total Kategori</div>
-                        <div class="h5 fw-bold mb-0 text-dark">{{ $totalKategori }}</div>
-                    </div>
+            <div class="stat-card-modern border-bps-blue">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <i class="bi bi-grid-fill" style="color: #003366; font-size: 15px;"></i>
+                    <span class="card-label">TOTAL KATEGORI</span>
                 </div>
+                <div class="card-value">{{ $totalKategori }}</div>
+                <div class="card-subtitle">Total kategori aktif</div>
             </div>
         </div>
 
-        <!-- Card 2: Kategori Terbanyak Item -->
+        <!-- Card 2: Kategori Terbanyak -->
         <div class="col-md-4">
-            <div class="card-bps stat-card p-3 h-100">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-success bg-opacity-10 p-2 text-success">
-                        <i class="bi bi-stars fs-5"></i>
-                    </div>
-                    <div class="flex-grow-1 overflow-hidden">
-                        <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Kategori Terbanyak</div>
-                        @if($kategoriTerbanyak)
-                            <div class="h6 fw-bold mb-0 text-dark text-truncate">{{ $kategoriTerbanyak->nama_kategori }}</div>
-                            <div class="small text-muted" style="font-size: 0.7rem;">{{ $kategoriTerbanyak->barangs_count ?? 0 }} item</div>
-                        @else
-                            <div class="h6 fw-bold mb-0 text-muted">-</div>
-                        @endif
-                    </div>
+            <div class="stat-card-modern border-bps-green">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <i class="bi bi-stars" style="color: #00A651; font-size: 15px;"></i>
+                    <span class="card-label">KATEGORI TERBANYAK</span>
+                </div>
+                <div class="card-value text-truncate">
+                    @if($kategoriTerbanyak)
+                        {{ $kategoriTerbanyak->nama_kategori }}
+                    @else
+                        -
+                    @endif
+                </div>
+                <div class="card-subtitle">
+                    @if($kategoriTerbanyak)
+                        {{ $kategoriTerbanyak->barangs_count ?? 0 }} item
+                    @else
+                        Belum ada data
+                    @endif
                 </div>
             </div>
         </div>
 
         <!-- Card 3: Kategori Terisi -->
         <div class="col-md-4">
-            <div class="card-bps stat-card p-3 h-100">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <div class="rounded-circle bg-info bg-opacity-10 p-2 text-info">
-                        <i class="bi bi-pie-chart-fill fs-5"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Kategori Terisi</div>
-                        @php
-                            $persentaseTerisi = $totalKategori > 0 ? round(($kategoriFilled / $totalKategori) * 100) : 0;
-                        @endphp
-                        <div class="h5 fw-bold mb-0 text-dark">{{ $persentaseTerisi }}%</div>
-                    </div>
+            <div class="stat-card-modern border-bps-orange">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <i class="bi bi-pie-chart-fill" style="color: #F5A623; font-size: 15px;"></i>
+                    <span class="card-label">KATEGORI TERISI</span>
                 </div>
-                <div class="progress" style="height: 4px;">
-                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ $persentaseTerisi }}%" aria-valuenow="{{ $persentaseTerisi }}" aria-valuemin="0" aria-valuemax="100"></div>
+                @php
+                    $persentaseTerisi = $totalKategori > 0 ? round(($kategoriFilled / $totalKategori) * 100) : 0;
+                @endphp
+                <div class="card-value">{{ $persentaseTerisi }}%</div>
+                <div class="progress mb-2" style="height: 4px; background-color: #f3f4f6;">
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: {{ $persentaseTerisi }}%; background-color: #F5A623;" 
+                         aria-valuenow="{{ $persentaseTerisi }}" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <div class="small text-muted mt-1" style="font-size: 0.65rem;">
+                <div class="card-subtitle">
                     {{ $kategoriFilled }} dari {{ $totalKategori }} kategori
                 </div>
             </div>

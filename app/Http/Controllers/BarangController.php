@@ -40,14 +40,6 @@ class BarangController extends Controller
     }
 
     /**
-     * Show the form for creating a new barang.
-     */
-    public function create(Request $request)
-    {
-        return redirect()->route('barangs.index', ['kategori_id' => $request->kategori_id]);
-    }
-
-    /**
      * Store a newly created barang in storage.
      */
     public function store(Request $request)
@@ -72,11 +64,6 @@ class BarangController extends Controller
     {
         $barang->load(['kategori'])->loadCount('pemeliharaans');
         return view('barangs.show', compact('barang'));
-    }
-
-    public function edit(Barang $barang)
-    {
-        return redirect()->route('barangs.index', ['kategori_id' => $barang->kategori_id]);
     }
 
     public function update(Request $request, Barang $barang)

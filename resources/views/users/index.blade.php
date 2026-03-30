@@ -99,7 +99,7 @@
                                             <div class="mb-0">
                                                 <label for="password-{{ $staff->id }}" class="form-label small fw-bold" style="color: #003366;">PASSWORD BARU (Kosongkan jika tidak ingin mengubah)</label>
                                                 <div class="input-group">
-                                                    <input type="password" name="password" id="password-{{ $staff->id }}" class="form-control shadow-none border-light-subtle" placeholder="Minimal 8 karakter" minlength="8">
+                                                    <input type="password" name="password" id="password-{{ $staff->id }}" class="form-control shadow-none border-light-subtle" placeholder="Minimal 8 karakter" minlength="8" autocomplete="new-password">
                                                     <button class="btn btn-outline-secondary border-light-subtle toggle-password" type="button" data-target="password-{{ $staff->id }}">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
@@ -143,7 +143,7 @@
                         <div class="mb-0">
                             <label for="password" class="form-label small fw-bold" style="color: #003366;">PASSWORD</label>
                             <div class="input-group">
-                                <input type="password" name="password" id="password" class="form-control shadow-none border-light-subtle" placeholder="Minimal 8 karakter" required minlength="8">
+                                <input type="password" name="password" id="password" class="form-control shadow-none border-light-subtle" placeholder="Minimal 8 karakter" required minlength="8" autocomplete="new-password">
                                 <button class="btn btn-outline-secondary border-light-subtle toggle-password" type="button" data-target="password">
                                     <i class="bi bi-eye"></i>
                                 </button>

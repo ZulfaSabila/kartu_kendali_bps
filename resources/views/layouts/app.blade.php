@@ -43,6 +43,11 @@
             flex-direction: column;
         }
 
+        /* ── Global Links ── */
+        a {
+            text-decoration: none !important;
+        }
+
         /* ── Page Content ── */
         main {
             flex: 1;

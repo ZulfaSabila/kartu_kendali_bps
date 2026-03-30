@@ -74,13 +74,13 @@
             </div>
             <div class="col-md-6 text-md-end mt-2 mt-md-0 d-flex justify-content-md-end gap-2">
                 @if(auth()->user()->isAdmin())
-                <a href="{{ route('pemeliharaans.create', ['barang_id' => request('barang_id')]) }}" class="btn-bps btn-bps-primary px-4 py-2">
+                <a href="{{ route('pemeliharaans.create', ['barang_id' => request('barang_id')]) }}" class="btn-bps btn-bps-primary px-4 py-2 text-decoration-none">
                     <i class="bi bi-plus-lg"></i> Tambah Data
                 </a>
-                <a href="{{ route('pemeliharaans.export.excel', ['barang_id' => request('barang_id'), 'search' => request('search')]) }}" class="btn-bps btn-bps-outline px-4 py-2" style="color: #1d6f42; border-color: #1d6f42;">
+                <a href="{{ route('pemeliharaans.export-excel', ['barang_id' => request('barang_id'), 'search' => request('search')]) }}" class="btn-bps btn-bps-outline px-4 py-2 text-decoration-none" style="color: #1d6f42; border-color: #1d6f42;">
                     <i class="bi bi-file-earmark-excel"></i> Excel
                 </a>
-                <a href="{{ route('pemeliharaans.export.pdf', ['barang_id' => request('barang_id')]) }}" class="btn-bps btn-bps-outline px-4 py-2">
+                <a href="{{ route('pemeliharaans.export-pdf', ['barang_id' => request('barang_id')]) }}" class="btn-bps btn-bps-outline px-4 py-2 text-decoration-none">
                     Cetak PDF
                 </a>
                 @endif

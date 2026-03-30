@@ -13,11 +13,6 @@ class KategoriController extends Controller
         return redirect()->route('dashboard');
     }
 
-    public function create()
-    {
-        return redirect()->route('kategoris.index');
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -38,11 +33,6 @@ class KategoriController extends Controller
     {
         // Untuk kategori, kita arahkan saja ke daftar barang dalam kategori tersebut
         return redirect()->route('barangs.index', ['kategori_id' => $kategori->id]);
-    }
-
-    public function edit(Kategori $kategori)
-    {
-        return redirect()->route('dashboard');
     }
 
     public function update(Request $request, Kategori $kategori)
@@ -73,5 +63,49 @@ class KategoriController extends Controller
             }
             throw $e;
         }
+    }
+
+    /**
+     * Tampilkan daftar kategori yang terhapus.
+     */
+    public function trashed()
+    {
+        $kategoris = Kategori::onlyTrashed()
+            ->withCount('barangs')
+            ->latest()
+            ->paginate(12);
+
+        return view('kategoris.trashed', compact('kategoris'));
+    }
+
+    /**
+     * Pulihkan kategori yang dihapus.
+     */
+    public function restore($id)
+    {
+        $kategori = Kategori::onlyTrashed()->findOrFail($id);
+        $kategori->restore();
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Kategori berhasil dipulihkan.');
+    }
+
+    /**
+     * Hapus kategori secara permanen.
+     */
+    public function forceDelete($id)
+    {
+        $kategori = Kategori::onlyTrashed()->findOrFail($id);
+        
+        // Hapus SEMUA barang dan pemeliharaan di dalam kategori ini secara permanen
+        foreach ($kategori->barangs()->withTrashed()->get() as $barang) {
+            $barang->pemeliharaans()->withTrashed()->forceDelete();
+            $barang->forceDelete();
+        }
+
+        $kategori->forceDelete();
+
+        return redirect()->route('kategoris.trashed')
+            ->with('success', 'Kategori dan seluruh data barang di dalamnya telah dihapus secara permanen.');
     }
 }
