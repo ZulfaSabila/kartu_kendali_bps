@@ -174,7 +174,12 @@ class PemeliharaanController extends Controller
         $barang = null;
         if ($request->filled('barang_id')) {
             $barang = Barang::find($request->barang_id);
-            if ($barang && $groupedData->isEmpty()) {
+            
+            if (!$barang) {
+                return redirect()->back()->with('error', 'Barang tidak ditemukan.');
+            }
+
+            if ($groupedData->isEmpty()) {
                 $groupedData = collect([$barang->id => collect([])]);
             }
         } elseif (!$groupedData->isEmpty()) {
@@ -183,8 +188,9 @@ class PemeliharaanController extends Controller
             $barang = $pemeliharaans->where('barang_id', $firstBarangId)->first()->barang ?? null;
         }
 
-        if (!$barang && $groupedData->isEmpty()) {
-            return back()->with('error', 'Data tidak ditemukan untuk dicetak.');
+        if ($groupedData->isEmpty()) {
+            return redirect()->back()
+                ->with('error', 'Tidak ada data pemeliharaan untuk diekspor. Silakan pilih barang yang memiliki riwayat pemeliharaan terlebih dahulu.');
         }
 
         $pdf = Pdf::loadView('pemeliharaans.pdf', compact('groupedData', 'barang'))->setPaper('a4', 'landscape');

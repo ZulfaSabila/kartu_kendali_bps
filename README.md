@@ -95,8 +95,8 @@ Setelah menjalankan perintah `php artisan migrate --seed`, Anda dapat masuk meng
 
 | Role | Email | Password |
 | :--- | :--- | :--- |
-| Admin | `[Sesuaikan dengan konfigurasi lokal]` | `[Sesuaikan dengan konfigurasi lokal]` |
-| User | `test@example.com` | `password` |
+| Admin | `[admin@bpsbontang.go.id]` | `[BPS@Bontang76]` |
+| User | `user@bps.go.id` | `User12345` |
 
 > ⚠️ **PENTING**: Segera ganti password Anda melalui menu **Profil** setelah berhasil login untuk pertama kali guna menjaga keamanan akun.
 

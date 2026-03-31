@@ -143,8 +143,9 @@
                 <nav aria-label="breadcrumb" class="mb-1">
                     <ol class="breadcrumb mb-0" style="font-size: 0.75rem;">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none" style="color: #6b7280;">Dashboard</a></li>
-                        @if(request('kategori_id') && $barangs->isNotEmpty() && $barangs->first()->kategori)
-                            <li class="breadcrumb-item active" aria-current="page" style="color: #003366;">{{ $barangs->first()->kategori->nama_kategori }}</li>
+                        @if($selectedKategori)
+                            <li class="breadcrumb-item"><a href="{{ route('barangs.index') }}" class="text-decoration-none" style="color: #6b7280;">Inventaris Barang</a></li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: #003366; font-weight: 500;">{{ $selectedKategori->nama_kategori }}</li>
                         @else
                             <li class="breadcrumb-item active" aria-current="page" style="color: #003366;">Inventaris Barang</li>
                         @endif

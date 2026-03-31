@@ -24,6 +24,11 @@ class BarangController extends Controller
             $query->where('kategori_id', $request->kategori_id);
         }
 
+        $selectedKategori = null;
+        if ($request->filled('kategori_id')) {
+            $selectedKategori = \App\Models\Kategori::find($request->kategori_id);
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -36,7 +41,7 @@ class BarangController extends Controller
         $barangs = $query->latest()->paginate(15);
         $kategoris = Kategori::all();
         
-        return view('barangs.index', compact('barangs', 'kategoris'));
+        return view('barangs.index', compact('barangs', 'kategoris', 'selectedKategori'));
     }
 
     /**
@@ -89,8 +94,9 @@ class BarangController extends Controller
     public function destroy(Barang $barang)
     {
         try {
+            $kategoriId = $barang->kategori_id;
             $barang->delete();
-            return redirect()->route('barangs.index')
+            return redirect()->route('barangs.index', ['kategori_id' => $kategoriId])
                 ->with('success', 'Barang berhasil dihapus.');
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->getCode() === '23000') {

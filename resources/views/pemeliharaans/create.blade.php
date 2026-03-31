@@ -161,7 +161,7 @@
 
         kategoriSelect.addEventListener('change', function () {
             const kategoriId = this.value;
-            barangSelect.innerHTML = '<option>Loading...</option>';
+            barangSelect.innerHTML = '<option value="">Memuat data...</option>';
             barangSelect.disabled = true;
             infoDisplay.style.display = 'none';
             if (!kategoriId) return;
@@ -169,7 +169,12 @@
             fetch(`/api/barangs-by-kategori/${kategoriId}`, {
                 headers: { 'Accept': 'application/json' }
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return res.json();
+            })
             .then(data => {
                 barangSelect.innerHTML = '<option value="">-- Pilih Barang --</option>';
                 data.forEach(barang => {
@@ -184,6 +189,11 @@
                     barangSelect.appendChild(opt);
                 });
                 barangSelect.disabled = false;
+            })
+            .catch(error => {
+                barangSelect.innerHTML = '<option value="">Gagal memuat data. Silakan refresh halaman.</option>';
+                barangSelect.disabled = true;
+                console.error('AJAX Error:', error);
             });
         });
 

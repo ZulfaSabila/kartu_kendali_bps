@@ -256,18 +256,12 @@
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>
 
-                    <!-- Remember Me & Forgot Password -->
+                    <!-- Remember Me -->
                     <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
                         <label for="remember_me" style="display: inline-flex; align-items: center; cursor: pointer;">
                             <input id="remember_me" type="checkbox" name="remember" style="width: 1rem; height: 1rem; border-radius: 0.25rem; border: 1px solid #CBD5E0; color: var(--bps-blue); focus:ring-var(--bps-blue);">
                             <span style="margin-left: 0.5rem; font-size: 13px; color: #374151;">Ingat Saya</span>
                         </label>
-                        
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" style="font-size: 13px; color: #1e3a5f; text-decoration: none; font-weight: 500;">
-                                Lupa Password?
-                            </a>
-                        @endif
                     </div>
 
                     <div>

@@ -44,8 +44,8 @@ class KategoriController extends Controller
 
         $kategori->update($validated);
 
-        // SETELAH EDIT: Kembali ke halaman barang kategori tersebut, bukan ke kelola kategori
-        return redirect()->route('dashboard', ['kategori_id' => $kategori->id])
+        // SETELAH EDIT: Kembali ke halaman dashboard
+        return redirect()->route('dashboard')
                         ->with('success', 'Data kategori berhasil diperbarui!');
     }
 
