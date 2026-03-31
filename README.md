@@ -50,7 +50,7 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di lingkungan lokal ata
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
-   DB_DATABASE=nama_database_anda
+   DB_DATABASE=kartu_kendali_bps
    DB_USERNAME=root
    DB_PASSWORD=
    ```
@@ -95,7 +95,7 @@ Setelah menjalankan perintah `php artisan migrate --seed`, Anda dapat masuk meng
 
 | Role | Email | Password |
 | :--- | :--- | :--- |
-| Admin | `[admin@bpsbontang.go.id]` | `[BPS@Bontang76]` |
+| Admin | `admin@bpsbontang.go.id` | `BPS@Bontang76` |
 | User | `user@bps.go.id` | `User12345` |
 
 > ⚠️ **PENTING**: Segera ganti password Anda melalui menu **Profil** setelah berhasil login untuk pertama kali guna menjaga keamanan akun.
